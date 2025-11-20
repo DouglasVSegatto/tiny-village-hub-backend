@@ -1,0 +1,36 @@
+# Stage 1: Build the Java application using a Gradle image
+FROM gradle:8.5.0-jdk21-alpine AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Gradle wrapper and build files
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle settings.gradle ./
+
+# Copy the source code
+COPY src ./src
+
+# Make gradlew executable
+RUN chmod +x gradlew
+
+# Build the Spring Boot executable JAR
+# Use the 'bootJar' task which is standard for Spring Boot Gradle builds
+RUN ./gradlew bootJar -x test
+
+# Stage 2: Create the final, lean runtime image
+FROM amazoncorretto:21-alpine
+
+# Set the argument for the built JAR file
+# Note: The JAR is typically placed in build/libs/
+ARG JAR_FILE=/app/build/libs/*.jar
+
+# Copy the built JAR from the build stage
+COPY --from=build ${JAR_FILE} app.jar
+
+# Expose the application port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java","-jar","/app.jar"]

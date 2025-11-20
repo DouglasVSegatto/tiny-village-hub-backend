@@ -1,0 +1,33 @@
+name: Backend API Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+
+    runs-on: backend-runner
+    
+    env:
+
+      TARGET_DIR: /home/ghrunner/tiny-village-hub
+
+    steps:
+      - name: 1. Checkout Backend Code
+        uses: actions/checkout@v4
+
+      - name: 2. Copy Code to Deployment Directory
+
+        run: |
+          echo "Copying fresh backend code to: ${{ env.TARGET_DIR }}/backend-repo"
+          rsync -av --exclude '.git' --delete $GITHUB_WORKSPACE/ ${{ env.TARGET_DIR }}/backend-repo/
+
+      - name: 3. Deploy Backend Service Only
+
+        run: |
+          cd ${{ env.TARGET_DIR }}
+          echo "Executing: docker compose up -d --build backend-api"
+
+          docker compose up -d --build backend-api
