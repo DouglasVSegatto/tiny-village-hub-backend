@@ -18,6 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtService {
 
+    // TODO RefreshToken and AccessToken
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
