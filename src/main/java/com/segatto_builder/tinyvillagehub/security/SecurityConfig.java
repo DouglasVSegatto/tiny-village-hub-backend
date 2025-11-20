@@ -44,7 +44,6 @@ public class SecurityConfig {
                         // Allow GET requests for item images
                         .requestMatchers("/uploads/**").permitAll()
                         // Require authentication for all other requests
-
                         .anyRequest().authenticated()
                 )
 
@@ -75,12 +74,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("*"));
-//        configuration.setAllowedOrigins(Arrays.asList(
-//                "http://localhost:5173", // Local dev (still useful)
-//                "http://localhost:3000", // Local dev (still useful)
-//                "https://your-app.com"   // ✅ PRODUCTION DOMAIN
-//        ));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://tinyvillagehubpopcornpalace.duckdns.org",
+                //FOR dev or local test
+                "http://localhost:5173",
+                "http://localhost:3000"
+        ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
