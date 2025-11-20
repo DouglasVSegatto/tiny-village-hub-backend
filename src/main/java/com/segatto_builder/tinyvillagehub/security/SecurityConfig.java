@@ -75,7 +75,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(Arrays.asList(
-                "https://tinyvillagehubpopcornpalace.duckdns.org",
+                "https://tinyvillagehub.popcornpalace.duckdns.org",
                 //FOR dev or local test
                 "http://localhost:5173",
                 "http://localhost:3000"
