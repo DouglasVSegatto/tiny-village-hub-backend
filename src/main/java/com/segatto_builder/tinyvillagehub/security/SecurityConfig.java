@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/items/available").permitAll()
                         // Allow GET requests for item images
                         .requestMatchers("/uploads/**").permitAll()
+                        // Allow health check endpoint
+                        .requestMatchers("/api/health").permitAll()
                         // Require authentication for all other requests
                         .anyRequest().authenticated()
                 )
