@@ -15,6 +15,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ItemUploadDto {
 
+    /**
+     * Example JSON:
+     {
+       "name": "Harry Potter Book",
+       "description": "First edition Harry Potter book in good condition",
+       "type": "BOOK",
+       "isForTrade": true,
+       "isForDonation": false
+     }
+     */
+
     // @NotBlank(message = "Item name is required")
     private String name;
 

@@ -1,14 +1,14 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
-import com.segatto_builder.tinyvillagehub.dto.TokenRefreshRequest;
-import com.segatto_builder.tinyvillagehub.dto.authenticationdto.LoginRequestDto;
-import com.segatto_builder.tinyvillagehub.dto.authenticationdto.LoginResponseDto;
-import com.segatto_builder.tinyvillagehub.dto.tokendto.TokenRefreshResponse;
+import com.segatto_builder.tinyvillagehub.dto.authentication.LoginRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.authentication.LoginResponseDto;
+import com.segatto_builder.tinyvillagehub.dto.token.TokenRefreshRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.token.TokenRefreshResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
-import com.segatto_builder.tinyvillagehub.service.CustomUserDetailsService;
 import com.segatto_builder.tinyvillagehub.security.JwtService;
+import com.segatto_builder.tinyvillagehub.service.CustomUserDetailsService;
 import com.segatto_builder.tinyvillagehub.service.RefreshTokenService;
 import com.segatto_builder.tinyvillagehub.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -80,8 +80,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+    @PostMapping("/refresh_token")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequestDto request) {
         String requestRefreshToken = request.getRefreshToken();
 
         return refreshTokenService.findByToken(requestRefreshToken)
@@ -91,7 +91,7 @@ public class AuthController {
                     String newAccessToken = jwtService.generateToken(token.getUser());
 
                     // Return the new tokens
-                    return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, requestRefreshToken));
+                    return ResponseEntity.ok(new TokenRefreshResponseDto(newAccessToken, requestRefreshToken));
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Refresh token not found in database."));
     }

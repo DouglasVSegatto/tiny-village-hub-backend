@@ -8,6 +8,16 @@ import lombok.*;
 @AllArgsConstructor
 //@RequiredArgsConstructor
 public class UserResponseDto {
+
+    /**
+     * Example JSON:
+     {
+       "id": 1,
+       "username": "user1",
+       "email": "user1@example.com"
+     }
+     */
+
     private Long id;
     private String username;
     private String email;
