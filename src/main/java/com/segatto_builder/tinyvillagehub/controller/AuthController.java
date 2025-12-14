@@ -8,7 +8,8 @@ import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.security.JwtService;
-import com.segatto_builder.tinyvillagehub.service.CustomUserDetailsService;
+import com.segatto_builder.tinyvillagehub.service.IPrincipalDetailsService;
+import com.segatto_builder.tinyvillagehub.service.PrincipalDetailsServiceImpl;
 import com.segatto_builder.tinyvillagehub.service.RefreshTokenService;
 import com.segatto_builder.tinyvillagehub.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,22 +25,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.segatto_builder.tinyvillagehub.security.PrincipalDetails;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final IPrincipalDetailsService iPrincipalDetailsService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/authenticate")
+
+    @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto authenticationRequest) throws Exception {
 
-        // 1. Authenticate credentials using the AuthenticationManager
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -50,16 +52,14 @@ public class AuthController {
             throw new Exception("Incorrect username or password", e);
         }
 
-        // 2. Load User Details and generate JWT
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+        // CAST to principaldetails
+        final PrincipalDetails principalDetails = (PrincipalDetails) iPrincipalDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
-        final String jwt = jwtService.generateToken(userDetails);
+        final String jwt = jwtService.generateToken(principalDetails);
 
-        User user = userService.findByUsername(userDetails.getUsername());
+        User user = principalDetails.getUser();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-        // 3. Return the JWT to the client
         return ResponseEntity.ok(new LoginResponseDto(jwt, refreshToken.getToken(), user.getId(), user.getUsername()));
     }
 

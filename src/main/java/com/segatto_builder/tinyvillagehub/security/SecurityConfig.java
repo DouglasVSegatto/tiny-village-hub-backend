@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 @Configuration
@@ -37,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow POST requests to Auth - clean up leater
                         .requestMatchers(HttpMethod.POST,"/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/auth/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/refresh_token").permitAll()
                         // Allow GET requests for item images
                         .requestMatchers(HttpMethod.GET, "/api/items/available").permitAll()

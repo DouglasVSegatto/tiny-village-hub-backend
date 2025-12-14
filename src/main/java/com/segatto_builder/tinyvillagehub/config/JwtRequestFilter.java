@@ -1,6 +1,6 @@
 package com.segatto_builder.tinyvillagehub.config;
 
-import com.segatto_builder.tinyvillagehub.service.CustomUserDetailsService;
+import com.segatto_builder.tinyvillagehub.service.PrincipalDetailsServiceImpl;
 import com.segatto_builder.tinyvillagehub.security.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -22,7 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final PrincipalDetailsServiceImpl userDetailsService;
     private final JwtService jwtService;
 
     @Override
