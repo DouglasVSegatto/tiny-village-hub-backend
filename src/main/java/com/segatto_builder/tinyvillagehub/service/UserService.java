@@ -14,12 +14,13 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAuthFacade authFacade;
 
+    @Override
     public User registerNewUser(UserRegistrationDto registrationDto) throws IllegalStateException {
 
         if (userRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
@@ -37,6 +38,7 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
+    @Override
     public User findByUsername() {
         String username = authFacade.getCurrentUsername();
         return userRepository.findByUsername(username)
@@ -44,6 +46,7 @@ public class UserService {
     }
 
     //Used by RefreshToken
+    @Override
     public User findUserById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));

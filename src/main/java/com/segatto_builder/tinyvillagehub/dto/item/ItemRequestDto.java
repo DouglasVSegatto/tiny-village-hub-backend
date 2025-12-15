@@ -4,7 +4,6 @@ package com.segatto_builder.tinyvillagehub.dto.item;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 // If you don't have these, you can delete the import and the annotations:
 // import jakarta.validation.constraints.NotBlank;
@@ -13,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemUploadDto {
+public class ItemRequestDto {
 
     /**
      * Example JSON:

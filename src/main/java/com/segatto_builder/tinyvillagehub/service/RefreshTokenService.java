@@ -14,17 +14,18 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenService {
+public class RefreshTokenService implements IRefreshTokenService{
 
     @Value("${jwt.refresh.expiration}")
     private Long refreshTokenDurationMs;
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserService userService;
+    private final IUserService userService;
 
     /**
      * Creates and saves a new refresh token for a user.
      */
+    @Override
     public RefreshToken createRefreshToken(UUID userId) {
         User user = userService.findUserById(userId); // Assuming you have a findUserById method
 
@@ -42,6 +43,7 @@ public class RefreshTokenService {
     /**
      * Finds and verifies if the token is valid (not expired).
      */
+    @Override
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
@@ -49,6 +51,7 @@ public class RefreshTokenService {
     /**
      * Verifies expiration. Throws exception if token is expired.
      */
+    @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
             refreshTokenRepository.delete(token);
@@ -58,6 +61,7 @@ public class RefreshTokenService {
     }
 
     @Transactional
+    @Override
     public int deleteByUserId(UUID userId) {
         User user = userService.findUserById(userId);
         return refreshTokenRepository.deleteByUser(user);

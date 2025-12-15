@@ -2,7 +2,7 @@ package com.segatto_builder.tinyvillagehub.controller;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
 import com.segatto_builder.tinyvillagehub.model.Item;
-import com.segatto_builder.tinyvillagehub.service.ItemService;
+import com.segatto_builder.tinyvillagehub.service.IItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemService itemService;
+    private final IItemService itemService;
 
 
     /**

@@ -38,7 +38,6 @@ public class ItemListingDto {
         this.name = item.getName();
         this.description = item.getDescription();
         this.type = item.getType();
-        this.imageUrl = item.getImageUrl();
         this.status = item.getStatus();
         // IMPORTANT: Safely get the owner's username
         this.ownerUsername = item.getOwner() != null ? item.getOwner().getUsername() : "Unknown";

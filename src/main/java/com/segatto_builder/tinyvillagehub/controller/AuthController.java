@@ -7,11 +7,11 @@ import com.segatto_builder.tinyvillagehub.dto.token.TokenRefreshResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
-import com.segatto_builder.tinyvillagehub.security.JwtService;
+import com.segatto_builder.tinyvillagehub.security.IJwtService;
 import com.segatto_builder.tinyvillagehub.security.PrincipalDetails;
 import com.segatto_builder.tinyvillagehub.service.IPrincipalDetailsService;
-import com.segatto_builder.tinyvillagehub.service.RefreshTokenService;
-import com.segatto_builder.tinyvillagehub.service.UserService;
+import com.segatto_builder.tinyvillagehub.service.IRefreshTokenService;
+import com.segatto_builder.tinyvillagehub.service.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final IPrincipalDetailsService iPrincipalDetailsService;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
-    private final RefreshTokenService refreshTokenService;
+    private final IUserService userService;
+    private final IRefreshTokenService refreshTokenService;
 
 
     @PostMapping("/login")

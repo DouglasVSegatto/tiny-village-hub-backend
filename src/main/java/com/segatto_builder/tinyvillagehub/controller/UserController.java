@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IAuthFacade iAuthFacade;
+    private final IAuthFacade authFacade;
 
     @GetMapping("/me")
     public UserResponseDto getCurrentUser() {
 
-        User user = iAuthFacade.getCurrentUser();
+        User user = authFacade.getCurrentUser();
 
         return new UserResponseDto(
                 user.getId(),

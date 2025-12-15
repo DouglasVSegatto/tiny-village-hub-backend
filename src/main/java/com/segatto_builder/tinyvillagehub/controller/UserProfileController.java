@@ -1,8 +1,8 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemUploadDto;
-import com.segatto_builder.tinyvillagehub.service.ItemService;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
+import com.segatto_builder.tinyvillagehub.service.IItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserProfileController {
 
-    private final ItemService itemService;
+    private final IItemService itemService;
 
     @GetMapping("/my-items")
     public ResponseEntity<List<ItemListingDto>> getMyItems() {
@@ -25,7 +25,7 @@ public class UserProfileController {
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemListingDto> updateItem(
             @PathVariable UUID itemId,
-            @RequestPart("itemDetails") ItemUploadDto itemDto) {
+            @RequestBody ItemRequestDto itemDto) {
 
         return ResponseEntity.ok(itemService.updateItem(itemId, itemDto));
     }

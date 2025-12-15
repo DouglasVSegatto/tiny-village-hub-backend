@@ -1,7 +1,7 @@
 package com.segatto_builder.tinyvillagehub.service;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemUploadDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import com.segatto_builder.tinyvillagehub.repository.ItemRepository;
@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ItemService {
+public class ItemService implements IItemService {
 
     private final ItemRepository itemRepository;
     private final IAuthFacade authFacade;
 
     //USER RELATED - TODO improve as it goes.
+    @Override
     public List<ItemListingDto> findAllByUserId() {
         UUID userId = authFacade.getCurrentUserId();
         List<Item> items = findUserItems(userId);
@@ -53,7 +54,8 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with ID: " + itemId));
     }
 
-    public ItemListingDto updateItem(UUID itemId, ItemUploadDto itemDto) {
+    @Override
+    public ItemListingDto updateItem(UUID itemId, ItemRequestDto itemDto) {
 
         Item item = findItemById(itemId);
         UUID userId = authFacade.getCurrentUserId();
@@ -73,6 +75,7 @@ public class ItemService {
         return new ItemListingDto(item);
     }
 
+    @Override
     public void deleteItem(UUID itemId) {
         Item item = findItemById(itemId);
         UUID userId = authFacade.getCurrentUserId();
