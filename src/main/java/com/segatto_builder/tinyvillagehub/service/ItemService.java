@@ -21,11 +21,6 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final IAuthFacade authFacade;
-    // ... other dependencies ...
-
-    // ... existing constructors ...
-//    @Value("${app.upload.dir}")
-//    private String uploadDir;
 
     //USER RELATED - TODO improve as it goes.
     public List<ItemListingDto> findAllByUserId() {
@@ -59,7 +54,7 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with ID: " + itemId));
     }
 
-    public ItemListingDto updateItem(UUID itemId, ItemUploadDto itemDto) throws IOException {
+    public ItemListingDto updateItem(UUID itemId, ItemUploadDto itemDto) {
 
         Item item = findItemById(itemId);
         UUID userId = authFacade.getCurrentUserId();
@@ -79,7 +74,7 @@ public class ItemService {
         return new ItemListingDto(item);
     }
 
-    public void deleteItem(UUID itemId) throws IOException {
+    public void deleteItem(UUID itemId) {
         Item item = findItemById(itemId);
         UUID userId = authFacade.getCurrentUserId();
         // Authorization Check
