@@ -5,6 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class AuthFacade implements IAuthFacade {
 
@@ -36,11 +38,15 @@ public class AuthFacade implements IAuthFacade {
         return null;
     }
 
-    public Long getCurrentUserId() {
+    public UUID getCurrentUserId() {
         return getCurrentUser().getId();
     }
 
     public String getCurrentUsername() {
         return getCurrentUser().getUsername();
+    }
+
+    public String getCurrentUserEmail() {
+        return getCurrentUser().getEmail();
     }
 }

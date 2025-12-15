@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "items")
@@ -17,8 +18,8 @@ import java.time.LocalDateTime;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -50,6 +51,7 @@ public class Item {
 
     private LocalDateTime uploadDate = LocalDateTime.now();
 
+    //Currently not using until future implementation
     @Column(nullable = true, length = 255)
     private String imageUrl;
 

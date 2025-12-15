@@ -6,6 +6,7 @@ import com.segatto_builder.tinyvillagehub.model.Item;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -13,12 +14,11 @@ import java.util.List;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
@@ -37,7 +37,5 @@ public class User {
     // The 'mappedBy' attribute refers to the 'owner' field in the Item entity
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Item> items = new ArrayList<>();
-
-    // --- Getters and Setters (Essential for JPA/Service interaction) ---
 
 }

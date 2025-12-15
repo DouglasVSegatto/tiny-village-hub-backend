@@ -5,6 +5,8 @@ import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 public class ItemListingDto {
@@ -22,7 +24,7 @@ public class ItemListingDto {
      }
      */
 
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
     private ItemType type;

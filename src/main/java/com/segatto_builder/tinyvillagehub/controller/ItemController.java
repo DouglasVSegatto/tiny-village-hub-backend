@@ -20,9 +20,6 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    // ... existing constructor ...
-
-    // ... existing createItem method ...
 
     /**
      * Endpoint to list all items available for trade or donation.
@@ -38,6 +35,4 @@ public class ItemController {
                 .collect(Collectors.toList());
     }
 
-//    @GetMapping("/{itemId}")
-//    public ResponseEntity<ItemListingDto> getItemDetails(@)
 }

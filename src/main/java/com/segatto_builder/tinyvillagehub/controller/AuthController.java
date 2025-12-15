@@ -40,22 +40,22 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto dto) throws Exception {
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            authenticationRequest.getUsername(),
-                            authenticationRequest.getPassword())
+                            dto.getUsername(),
+                            dto.getPassword())
             );
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
-        // CAST to principaldetails
-        final PrincipalDetails principalDetails = (PrincipalDetails) iPrincipalDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        // CAST to PrincipalDetails to access the custom 'getUser()' method, avoiding second db query.
+        final PrincipalDetails principalDetails = (PrincipalDetails) iPrincipalDetailsService.loadUserByUsername(dto.getUsername());
 
-        final String jwt = jwtService.generateToken(principalDetails);
+        String jwt = jwtService.generateToken(principalDetails);
 
         User user = principalDetails.getUser();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());

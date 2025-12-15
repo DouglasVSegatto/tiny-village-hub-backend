@@ -25,7 +25,7 @@ public class RefreshTokenService {
     /**
      * Creates and saves a new refresh token for a user.
      */
-    public RefreshToken createRefreshToken(Long userId) {
+    public RefreshToken createRefreshToken(UUID userId) {
         User user = userService.findUserById(userId); // Assuming you have a findUserById method
 
         // Check if a token already exists for the user and delete it (optional cleanup)
@@ -58,7 +58,7 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public int deleteByUserId(Long userId) {
+    public int deleteByUserId(UUID userId) {
         User user = userService.findUserById(userId);
         return refreshTokenRepository.deleteByUser(user);
     }
