@@ -23,35 +23,40 @@ public class ItemService implements IItemService {
 
     //USER RELATED - TODO improve as it goes.
     @Override
-    public List<ItemListingDto> findAllByUserId() {
-        UUID userId = authFacade.getCurrentUserId();
-        List<Item> items = findUserItems(userId);
+    public List<ItemListingDto> findAllByOwnerId() {
+        UUID ownerId = authFacade.getCurrentUserId();
+        List<Item> items = findOwnerItems(ownerId);
         return items.stream()
                 .map(ItemListingDto::new)
                 .collect(Collectors.toList());
     }
 
-    public List<Item> findActiveByUserId() {
-        UUID userId = authFacade.getCurrentUserId();
-        return findUserItemsByStatus(userId, ItemStatus.AVAILABLE);
+    @Override
+    public List<Item> findActiveByOwnerId() {
+        UUID owner_id = authFacade.getCurrentUserId();
+        return findOwnerItemsByStatus(owner_id, ItemStatus.AVAILABLE);
     }
 
-    //GENERAL
+    @Override
     public List<Item> findAllAvailableItems() {
         return itemRepository.findByStatus(ItemStatus.AVAILABLE);
     }
 
-    public List<Item> findUserItems(UUID userId) {
-        return itemRepository.findByOwnerId(userId);
-    }
-
-    public List<Item> findUserItemsByStatus(UUID uuid, ItemStatus status) {
-        return itemRepository.findByOwnerIdAndStatus(uuid, status);
-    }
-
+    @Override
     public Item findItemById(UUID itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with ID: " + itemId));
+    }
+
+    @Override
+    public void deleteItem(UUID itemId) {
+        Item item = findItemById(itemId);
+        UUID userId = authFacade.getCurrentUserId();
+        // Authorization Check
+        if (!item.getOwner().getId().equals(userId)) {
+            throw new SecurityException("User is not authorized to delete this item.");
+        }
+        itemRepository.delete(item);
     }
 
     @Override
@@ -75,14 +80,12 @@ public class ItemService implements IItemService {
         return new ItemListingDto(item);
     }
 
-    @Override
-    public void deleteItem(UUID itemId) {
-        Item item = findItemById(itemId);
-        UUID userId = authFacade.getCurrentUserId();
-        // Authorization Check
-        if (!item.getOwner().getId().equals(userId)) {
-            throw new SecurityException("User is not authorized to delete this item.");
-        }
-        itemRepository.delete(item);
+    //PRIVATE
+    private List<Item> findOwnerItems(UUID ownerId) {
+        return itemRepository.findByOwnerId(ownerId);
+    }
+
+    private List<Item> findOwnerItemsByStatus(UUID ownerId, ItemStatus status) {
+        return itemRepository.findByOwnerIdAndStatus(ownerId, status);
     }
 }

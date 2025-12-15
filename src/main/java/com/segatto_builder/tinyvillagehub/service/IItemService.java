@@ -9,7 +9,9 @@ import java.util.UUID;
 
 public interface IItemService {
     List<Item> findAllAvailableItems();
-    List<ItemListingDto> findAllByUserId();
-    ItemListingDto updateItem(UUID itemId, ItemRequestDto itemDto);
-    void deleteItem(UUID itemId);
+    List<ItemListingDto> findAllByOwnerId();
+    List<Item> findActiveByOwnerId();
+    Item findItemById(UUID itemId);
+    ItemListingDto updateItem(UUID ownerId, ItemRequestDto itemDto);
+    void deleteItem(UUID ownerId);
 }

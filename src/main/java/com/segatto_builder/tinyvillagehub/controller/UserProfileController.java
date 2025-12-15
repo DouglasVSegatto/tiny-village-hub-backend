@@ -19,7 +19,7 @@ public class UserProfileController {
 
     @GetMapping("/my-items")
     public ResponseEntity<List<ItemListingDto>> getMyItems() {
-        return ResponseEntity.ok(itemService.findAllByUserId());
+        return ResponseEntity.ok(itemService.findAllByOwnerId());
     }
 
     @PutMapping("/{itemId}")
