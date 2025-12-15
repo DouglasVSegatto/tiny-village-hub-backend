@@ -1,9 +1,7 @@
 package com.segatto_builder.tinyvillagehub.service;
 
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
-import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.model.User;
-import com.segatto_builder.tinyvillagehub.repository.ItemRepository;
 import com.segatto_builder.tinyvillagehub.repository.UserRepository;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service

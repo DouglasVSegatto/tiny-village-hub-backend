@@ -1,6 +1,9 @@
 package com.segatto_builder.tinyvillagehub.dto.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -8,15 +11,14 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
 public class UserResponseDto {
 
     /**
      * Example JSON:
      {
-       "id": 1,
-       "username": "user1",
-       "email": "user1@example.com"
+     "id": 1,
+     "username": "user1",
+     "email": "user1@example.com"
      }
      */
 

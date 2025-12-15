@@ -1,6 +1,5 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
-// ... existing imports ...
 import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.service.ItemService;
@@ -28,10 +27,8 @@ public class ItemController {
     @GetMapping("/available")
     public List<ItemListingDto> listAvailableItems() {
         List<Item> items = itemService.findAllAvailableItems();
-
-        // Map the Item entities to the safe ItemListingDto list
         return items.stream()
-                .map(ItemListingDto::new) // Uses the DTO constructor we created
+                .map(ItemListingDto::new)
                 .collect(Collectors.toList());
     }
 
