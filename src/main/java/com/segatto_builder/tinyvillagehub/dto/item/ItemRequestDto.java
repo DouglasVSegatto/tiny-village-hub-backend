@@ -21,7 +21,7 @@ public class ItemRequestDto {
      "name": "Harry Potter Book",
      "description": "First edition Harry Potter book in good condition",
      "type": "BOOK",
-     "availabilityType": "TRADE_OR_DONATION"
+     "availabilityType": "TRADE"
      }
      */
 

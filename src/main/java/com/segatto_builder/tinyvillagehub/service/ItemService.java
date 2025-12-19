@@ -85,6 +85,8 @@ public class ItemService implements IItemService {
     public void add(ItemRequestDto dto){
         Item item = itemMapper.toModel(dto);
         item.setOwner(authFacade.getCurrentUser());
+        //AAll Items start as DRAFT, user can update it later.
+        item.setStatus(ItemStatus.DRAFT);
         itemRepository.save(item);
     }
 
