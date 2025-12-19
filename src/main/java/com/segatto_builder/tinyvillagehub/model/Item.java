@@ -1,5 +1,6 @@
 package com.segatto_builder.tinyvillagehub.model;
 
+import com.segatto_builder.tinyvillagehub.model.enums.ItemAvailabilityType;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import jakarta.persistence.*;
@@ -31,9 +32,9 @@ public class Item {
     @Column(nullable = false)
     private ItemType type;
 
-    private boolean isForTrade = true;
-
-    private boolean isForDonation = false;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ItemAvailabilityType availabilityType = ItemAvailabilityType.TRADE;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

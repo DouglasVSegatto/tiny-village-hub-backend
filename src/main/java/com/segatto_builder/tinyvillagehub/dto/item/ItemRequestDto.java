@@ -1,6 +1,7 @@
 package com.segatto_builder.tinyvillagehub.dto.item;
 
 
+import com.segatto_builder.tinyvillagehub.model.enums.ItemAvailabilityType;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +18,10 @@ public class ItemRequestDto {
     /**
      * Example JSON:
      {
-       "name": "Harry Potter Book",
-       "description": "First edition Harry Potter book in good condition",
-       "type": "BOOK",
-       "isForTrade": true,
-       "isForDonation": false
+     "name": "Harry Potter Book",
+     "description": "First edition Harry Potter book in good condition",
+     "type": "BOOK",
+     "availabilityType": "TRADE_OR_DONATION"
      }
      */
 
@@ -34,10 +34,6 @@ public class ItemRequestDto {
     // @NotNull(message = "Item type is required")
     private ItemType type; // ItemType is your custom Enum (e.g., BOOK, TOOL, FOOD)
 
-    // @NotNull
-    private Boolean isForTrade;
-
-    // @NotNull
-    private Boolean isForDonation;
-
+    // @NotNull(message = "Item Availability type is required")
+    private ItemAvailabilityType availabilityType;
 }

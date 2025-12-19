@@ -27,14 +27,14 @@ public class UserProfileController {
             @PathVariable UUID itemId,
             @RequestBody ItemRequestDto itemDto) {
 
-        return ResponseEntity.ok(itemService.updateItem(itemId, itemDto));
+        return ResponseEntity.ok(itemService.update(itemId, itemDto));
     }
 
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> deleteItem(
             @PathVariable UUID itemId) {
-        itemService.deleteItem(itemId);
+        itemService.delete(itemId);
         return ResponseEntity.noContent().build();
     }
 }

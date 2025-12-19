@@ -2,6 +2,7 @@ package com.segatto_builder.tinyvillagehub.service;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
+import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import com.segatto_builder.tinyvillagehub.repository.ItemRepository;
@@ -20,6 +21,7 @@ public class ItemService implements IItemService {
 
     private final ItemRepository itemRepository;
     private final IAuthFacade authFacade;
+    private final ItemMapper itemMapper;
 
     //USER RELATED - TODO improve as it goes.
     @Override
@@ -38,19 +40,19 @@ public class ItemService implements IItemService {
     }
 
     @Override
-    public List<Item> findAllAvailableItems() {
+    public List<Item> findAllAvailable() {
         return itemRepository.findByStatus(ItemStatus.AVAILABLE);
     }
 
     @Override
-    public Item findItemById(UUID itemId) {
+    public Item findById(UUID itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with ID: " + itemId));
     }
 
     @Override
-    public void deleteItem(UUID itemId) {
-        Item item = findItemById(itemId);
+    public void delete(UUID itemId) {
+        Item item = findById(itemId);
         UUID userId = authFacade.getCurrentUserId();
         // Authorization Check
         if (!item.getOwner().getId().equals(userId)) {
@@ -60,9 +62,9 @@ public class ItemService implements IItemService {
     }
 
     @Override
-    public ItemListingDto updateItem(UUID itemId, ItemRequestDto itemDto) {
+    public ItemListingDto update(UUID itemId, ItemRequestDto itemDto) {
 
-        Item item = findItemById(itemId);
+        Item item = findById(itemId);
         UUID userId = authFacade.getCurrentUserId();
 
         // Authorization Check
@@ -73,11 +75,17 @@ public class ItemService implements IItemService {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setType(itemDto.getType());
-        item.setForTrade(itemDto.getIsForTrade());
-        item.setForDonation(itemDto.getIsForDonation());
+        item.setAvailabilityType(itemDto.getAvailabilityType());
 
         itemRepository.save(item);
         return new ItemListingDto(item);
+    }
+
+    @Override
+    public void add(ItemRequestDto dto){
+        Item item = itemMapper.toModel(dto);
+        item.setOwner(authFacade.getCurrentUser());
+        itemRepository.save(item);
     }
 
     //PRIVATE
