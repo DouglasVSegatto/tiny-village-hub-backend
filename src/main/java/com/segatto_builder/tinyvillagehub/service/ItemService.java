@@ -1,7 +1,7 @@
 package com.segatto_builder.tinyvillagehub.service;
 
-import com.segatto_builder.tinyvillagehub.dto.item.ItemListingDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,23 +26,23 @@ public class ItemService implements IItemService {
 
     //USER RELATED - TODO improve as it goes.
     @Override
-    public List<ItemListingDto> findAllByOwnerId() {
+    public List<ItemResponseDto> findAllByOwnerId() {
         UUID ownerId = authFacade.getCurrentUserId();
         List<Item> items = findOwnerItems(ownerId);
         return items.stream()
-                .map(ItemListingDto::new)
+                .map(ItemResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Item> findActiveByOwnerId() {
         UUID owner_id = authFacade.getCurrentUserId();
-        return findOwnerItemsByStatus(owner_id, ItemStatus.AVAILABLE);
+        return findOwnerItemsByStatus(owner_id, ItemStatus.ACTIVE);
     }
 
     @Override
     public List<Item> findAllAvailable() {
-        return itemRepository.findByStatus(ItemStatus.AVAILABLE);
+        return itemRepository.findByStatus(ItemStatus.ACTIVE);
     }
 
     @Override
@@ -53,40 +54,100 @@ public class ItemService implements IItemService {
     @Override
     public void delete(UUID itemId) {
         Item item = findById(itemId);
-        UUID userId = authFacade.getCurrentUserId();
-        // Authorization Check
-        if (!item.getOwner().getId().equals(userId)) {
-            throw new SecurityException("User is not authorized to delete this item.");
-        }
+        validateOwnership(item);
         itemRepository.delete(item);
     }
 
     @Override
-    public ItemListingDto update(UUID itemId, ItemRequestDto itemDto) {
+    public void update(UUID id, ItemRequestDto dto) {
 
-        Item item = findById(itemId);
-        UUID userId = authFacade.getCurrentUserId();
+        Item item = findById(id);
+        validateOwnership(item);
 
-        // Authorization Check
-        if (!item.getOwner().getId().equals(userId)) {
-            throw new SecurityException("User is not authorized to update this item.");
-        }
-
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setType(itemDto.getType());
-        item.setAvailabilityType(itemDto.getAvailabilityType());
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setType(dto.getType());
+        item.setAvailabilityType(dto.getAvailabilityType());
 
         itemRepository.save(item);
-        return new ItemListingDto(item);
     }
 
     @Override
-    public void add(ItemRequestDto dto){
+    public void create(ItemRequestDto dto) {
         Item item = itemMapper.toModel(dto);
         item.setOwner(authFacade.getCurrentUser());
-        //AAll Items start as DRAFT, user can update it later.
-        item.setStatus(ItemStatus.DRAFT);
+        //All Items start as INACTIVE, user can update it later.
+        item.setStatus(ItemStatus.INACTIVE);
+        itemRepository.save(item);
+    }
+
+    @Override
+    public void activateItem(UUID id) {
+        Item item = findById(id);
+        validateOwnership(item);
+
+        Set<ItemStatus> allowedStates = Set.of(ItemStatus.INACTIVE, ItemStatus.PENDING);
+
+        if (!allowedStates.contains(item.getStatus())) {
+            throw new IllegalStateException(
+                    String.format("Cannot activate item with status %s. Allowed states: %s",
+                            item.getStatus(), allowedStates)
+            );
+        }
+
+        item.setStatus(ItemStatus.ACTIVE);
+        itemRepository.save(item);
+    }
+
+    @Override
+    public void deactivateItem(UUID id) {
+        Item item = findById(id);
+        validateOwnership(item);
+
+        Set<ItemStatus> allowedStates = Set.of(ItemStatus.ACTIVE, ItemStatus.PENDING);
+
+        if (!allowedStates.contains(item.getStatus())) {
+            throw new IllegalStateException(
+                    String.format("Cannot deactivate item with status %s. Allowed states: %s",
+                            item.getStatus(), allowedStates)
+            );
+        }
+
+        item.setStatus(ItemStatus.INACTIVE);
+        itemRepository.save(item);
+    }
+
+    @Override
+    public void pendingItem(UUID id) {
+        Item item = findById(id);
+        validateOwnership(item);
+
+        if (item.getStatus() != ItemStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    String.format("Cannot set item to pending with status %s. Must be ACTIVE",
+                            item.getStatus())
+            );
+        }
+
+        item.setStatus(ItemStatus.PENDING);
+        itemRepository.save(item);
+    }
+
+    @Override
+    public void completeItem(UUID id) {
+        Item item = findById(id);
+        validateOwnership(item);
+
+        Set<ItemStatus> allowedStates = Set.of(ItemStatus.ACTIVE, ItemStatus.PENDING);
+
+        if (!allowedStates.contains(item.getStatus())) {
+            throw new IllegalStateException(
+                    String.format("Cannot complete item with status %s. Allowed states: %s",
+                            item.getStatus(), allowedStates)
+            );
+        }
+
+        item.setStatus(ItemStatus.COMPLETED);
         itemRepository.save(item);
     }
 
@@ -97,5 +158,13 @@ public class ItemService implements IItemService {
 
     private List<Item> findOwnerItemsByStatus(UUID ownerId, ItemStatus status) {
         return itemRepository.findByOwnerIdAndStatus(ownerId, status);
+    }
+
+    private void validateOwnership(Item item) {
+        UUID userId = authFacade.getCurrentUserId();
+
+        if (!item.getOwner().getId().equals(userId)) {
+            throw new SecurityException("User is not authorized to update this item.");
+        }
     }
 }

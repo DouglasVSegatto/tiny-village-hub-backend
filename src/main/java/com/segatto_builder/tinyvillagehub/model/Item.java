@@ -38,7 +38,7 @@ public class Item {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ItemStatus status = ItemStatus.AVAILABLE;
+    private ItemStatus status = ItemStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)

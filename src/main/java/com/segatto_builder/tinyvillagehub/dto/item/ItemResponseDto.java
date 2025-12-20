@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ItemListingDto {
+public class ItemResponseDto {
 
     /**
      * Example JSON:
@@ -33,7 +33,7 @@ public class ItemListingDto {
     private String ownerUsername; // Display the owner's username, not their sensitive ID/email
 
     // Constructor to map the Item entity to the DTO
-    public ItemListingDto(Item item) {
+    public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.name = item.getName();
         this.description = item.getDescription();
