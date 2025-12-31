@@ -34,6 +34,10 @@ public class User {
 
     private LocalDateTime joinDate = LocalDateTime.now();
 
+    @Embedded
+    @Column(nullable = false)
+    private Address address;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Item> items = new ArrayList<>();
 

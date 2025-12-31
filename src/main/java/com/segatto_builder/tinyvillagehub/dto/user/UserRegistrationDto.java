@@ -15,7 +15,13 @@ public class UserRegistrationDto {
      {
        "username": "user1",
        "email": "user1@example.com",
-       "password": "password123"
+       "password": "password123",
+       "address": {
+         "neighborhood": "Vila Madalena",
+         "city": "São Paulo",
+         "state": "SP",
+         "country": "Brazil"
+       }
      }
      */
 
@@ -30,5 +36,17 @@ public class UserRegistrationDto {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
+
+    @NotBlank(message = "Neighborhood is required")
+    private String neighborhood;
+
+    @NotBlank(message = "City is required")
+    private String city;
+
+    @NotBlank(message = "State is required")
+    private String state;
+
+    @NotBlank(message = "Country is required")
+    private String country;
 
 }

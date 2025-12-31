@@ -1,6 +1,9 @@
 package com.segatto_builder.tinyvillagehub.service;
 
+import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
+import com.segatto_builder.tinyvillagehub.mappers.AddressMapper;
+import com.segatto_builder.tinyvillagehub.model.Address;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.repository.UserRepository;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
@@ -19,6 +22,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAuthFacade authFacade;
+    private final AddressMapper addressMapper;
 
     @Override
     public User registerNewUser(UserRegistrationDto registrationDto) throws IllegalStateException {
@@ -31,6 +35,9 @@ public class UserService implements IUserService {
         User newUser = new User();
         newUser.setUsername(registrationDto.getUsername());
         newUser.setEmail(registrationDto.getEmail());
+
+        Address address = addressMapper.fromRegistration(registrationDto);
+        newUser.setAddress(address);
 
         String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
         newUser.setPasswordHash(encodedPassword);
@@ -50,5 +57,14 @@ public class UserService implements IUserService {
     public User findUserById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+    }
+
+    @Override
+    public void updateAddress(AddressRequestDto dto) {
+        User user = authFacade.getCurrentUser();
+        Address address = addressMapper.toModel(dto);
+
+        user.setAddress(address);
+        userRepository.save(user);
     }
 }

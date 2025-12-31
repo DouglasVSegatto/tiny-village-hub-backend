@@ -64,21 +64,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         try {
-            // Call the service layer to handle the business logic
             User registeredUser = userService.registerNewUser(registrationDto);
-
-            // Return a success response, 201 Created
             return new ResponseEntity<>(
                     "User registered successfully. ID: " + registeredUser.getId(),
                     HttpStatus.CREATED
             );
         } catch (IllegalStateException e) {
-            // Return an error response if username/email is taken, 400 Bad Request
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/refresh_token")
+    @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequestDto request) {
         String requestRefreshToken = request.getRefreshToken();
 
