@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/auth/refresh_token").permitAll()
                         // Allow GET requests for item images
                         .requestMatchers(HttpMethod.GET, "/api/items/available").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/items/search/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         // Allow health check endpoint
                         .requestMatchers("/api/health").permitAll()

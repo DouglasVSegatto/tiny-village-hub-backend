@@ -16,12 +16,10 @@ public class UserRegistrationDto {
        "username": "user1",
        "email": "user1@example.com",
        "password": "password123",
-       "address": {
-         "neighborhood": "Vila Madalena",
-         "city": "São Paulo",
-         "state": "SP",
-         "country": "Brazil"
-       }
+       "neighborhood": "Vila Madalena",
+       "city": "São Paulo",
+       "state": "SP",
+       "country": "Brazil"
      }
      */
 

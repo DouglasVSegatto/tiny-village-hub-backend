@@ -134,6 +134,38 @@ public class ItemService implements IItemService {
     }
 
     @Override
+    public List<ItemResponseDto> listByCity(String city) {
+        List<Item> items = findByCity(city);
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemResponseDto> listByNeighborhood(String neighborhood) {
+        List<Item> items = findByNeighborhood(neighborhood);
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemResponseDto> listByState(String state) {
+        List<Item> items = findByState(state);
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemResponseDto> listByCountry(String country) {
+        List<Item> items = findByCountry(country);
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void completeItem(UUID id) {
         Item item = findById(id);
         validateOwnership(item);
@@ -167,4 +199,21 @@ public class ItemService implements IItemService {
             throw new SecurityException("User is not authorized to update this item.");
         }
     }
+
+    private List<Item> findByCity(String city){
+        return itemRepository.findByStatusAndOwnerAddressCityIgnoreCase(ItemStatus.ACTIVE, city);
+    }
+
+    private List<Item> findByNeighborhood(String neighborhood){
+        return itemRepository.findByStatusAndOwnerAddressNeighborhoodIgnoreCase(ItemStatus.ACTIVE, neighborhood);
+    }
+
+    private List<Item> findByState(String neighborhood){
+        return itemRepository.findByStatusAndOwnerAddressStateIgnoreCase(ItemStatus.ACTIVE, neighborhood);
+    }
+
+    private List<Item> findByCountry(String neighborhood){
+        return itemRepository.findByStatusAndOwnerAddressCountryIgnoreCase(ItemStatus.ACTIVE, neighborhood);
+    }
+
 }

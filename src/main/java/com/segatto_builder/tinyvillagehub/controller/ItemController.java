@@ -26,13 +26,6 @@ public class ItemController {
      * Endpoint to list all items available for trade or donation.
      * This endpoint is PUBLICLY ACCESSIBLE.
      */
-    @GetMapping("/available")
-    public List<ItemResponseDto> listAvailableItems() {
-        List<Item> items = itemService.findAllAvailable();
-        return items.stream()
-                .map(ItemResponseDto::new)
-                .collect(Collectors.toList());
-    }
 
     @PutMapping
     public ResponseEntity<?> create(@RequestBody ItemRequestDto dto) {
@@ -59,7 +52,7 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
-    // Pending Transaction item (ACTIVE → PENDING})
+    // Pending Transaction item (ACTIVE → PENDING)
     @PatchMapping("/{itemId}/pending")
     public ResponseEntity<?> pendingItem(@PathVariable UUID itemId) {
         itemService.pendingItem(itemId);
@@ -78,6 +71,37 @@ public class ItemController {
     public ResponseEntity<?> completeItem(@PathVariable UUID itemId) {
         itemService.completeItem(itemId);
         return ResponseEntity.ok().build();
+    }
+
+    /* =-=-= PERMIT ALL ENDPOINTS =-=-= */
+
+    @GetMapping("/available")
+    public List<ItemResponseDto> listAvailableItems() {
+        List<Item> items = itemService.findAllAvailable();
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/search/city/{city}")
+    public List<ItemResponseDto> listByCity(@PathVariable String city) {
+        return itemService.listByCity(city);
+
+    }
+
+    @GetMapping("/search/neighborhood/{neighborhood}")
+    public List<ItemResponseDto> listByNeighborhood(@PathVariable String neighborhood) {
+        return itemService.listByNeighborhood(neighborhood);
+    }
+
+    @GetMapping("/search/state/{state}")
+    public List<ItemResponseDto> listByState(@PathVariable String state) {
+        return itemService.listByState(state);
+    }
+
+    @GetMapping("/search/country/{country}")
+    public List<ItemResponseDto> listByCountry(@PathVariable String country) {
+        return itemService.listByCountry(country);
     }
 
 }

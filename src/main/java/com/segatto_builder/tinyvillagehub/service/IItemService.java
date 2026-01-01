@@ -19,4 +19,8 @@ public interface IItemService {
     void deactivateItem(UUID id);
     void completeItem(UUID id);
     void pendingItem(UUID id);
+    List<ItemResponseDto> listByCity(String city);
+    List<ItemResponseDto> listByNeighborhood(String neighborhood);
+    List<ItemResponseDto> listByState(String city);
+    List<ItemResponseDto> listByCountry(String neighborhood);
 }

@@ -18,4 +18,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByOwnerIdAndStatus(UUID ownerId, ItemStatus status);
 
+    List<Item> findByStatusAndOwnerAddressCityIgnoreCase(ItemStatus itemStatus, String city);
+
+    List<Item> findByStatusAndOwnerAddressNeighborhoodIgnoreCase(ItemStatus itemStatus, String neighborhood);
+
+    List<Item> findByStatusAndOwnerAddressStateIgnoreCase(ItemStatus itemStatus, String neighborhood);
+
+    List<Item> findByStatusAndOwnerAddressCountryIgnoreCase(ItemStatus itemStatus, String neighborhood);
 }
