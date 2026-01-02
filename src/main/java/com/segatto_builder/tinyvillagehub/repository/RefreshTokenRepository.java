@@ -1,11 +1,24 @@
 package com.segatto_builder.tinyvillagehub.repository;
 
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
-import com.segatto_builder.tinyvillagehub.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
     Optional<RefreshToken> findByToken(String token);
-    int deleteByUser(User user); // For logging out/revoking tokens
+
+    void deleteByUserId(UUID userId);
+
+    void deleteById(UUID id);
+
+    @Modifying
+    @Query("DELETE FROM refreshtoken rt WHERE rt.expiryDate < :now")
+    void deleteExpiredTokens(Instant now);
+
+    void deleteByToken(String token);
 }

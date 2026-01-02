@@ -2,13 +2,17 @@ package com.segatto_builder.tinyvillagehub.controller;
 
 import com.segatto_builder.tinyvillagehub.dto.authentication.LoginRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.authentication.LoginResponseDto;
+import com.segatto_builder.tinyvillagehub.dto.authentication.LogoutRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.authentication.ReAuthRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.token.TokenRefreshRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.token.TokenRefreshResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
+import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import com.segatto_builder.tinyvillagehub.security.IJwtService;
 import com.segatto_builder.tinyvillagehub.security.PrincipalDetails;
+import com.segatto_builder.tinyvillagehub.service.IAuthService;
 import com.segatto_builder.tinyvillagehub.service.IPrincipalDetailsService;
 import com.segatto_builder.tinyvillagehub.service.IRefreshTokenService;
 import com.segatto_builder.tinyvillagehub.service.IUserService;
@@ -30,63 +34,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final IPrincipalDetailsService iPrincipalDetailsService;
-    private final IJwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final IUserService userService;
-    private final IRefreshTokenService refreshTokenService;
+    private final IAuthService authService;
+
 
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto dto) throws Exception {
-
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            dto.getUsername(),
-                            dto.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        // CAST to PrincipalDetails to access the custom 'getUser()' method, avoiding second db query.
-        final PrincipalDetails principalDetails = (PrincipalDetails) iPrincipalDetailsService.loadUserByUsername(dto.getUsername());
-
-        String jwt = jwtService.generateToken(principalDetails);
-
-        User user = principalDetails.getUser();
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-
-        return ResponseEntity.ok(new LoginResponseDto(jwt, refreshToken.getToken(), user.getId(), user.getUsername()));
+        return ResponseEntity.ok(authService.login(dto));
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
-        try {
-            User registeredUser = userService.registerNewUser(registrationDto);
-            return new ResponseEntity<>(
-                    "User registered successfully. ID: " + registeredUser.getId(),
-                    HttpStatus.CREATED
-            );
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        authService.register(registrationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequestDto request) {
-        String requestRefreshToken = request.getRefreshToken();
+        return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(request));
+    }
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(token -> {
-                    // Generate a new access token
-                    String newAccessToken = jwtService.generateToken(token.getUser());
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutDevice(@RequestBody LogoutRequestDto dto){
+        authService.revokeToken(dto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-                    // Return the new tokens
-                    return ResponseEntity.ok(new TokenRefreshResponseDto(newAccessToken, requestRefreshToken));
-                })
-                .orElseThrow(() -> new EntityNotFoundException("Refresh token not found in database."));
+    @PostMapping("/logout-all-devices")
+    public ResponseEntity<?> logoutAllDevices(@RequestBody ReAuthRequestDto dto){
+        authService.revokeAllTokens(dto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

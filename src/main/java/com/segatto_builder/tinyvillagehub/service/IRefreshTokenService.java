@@ -9,5 +9,7 @@ public interface IRefreshTokenService {
     RefreshToken createRefreshToken(UUID userId);
     Optional<RefreshToken> findByToken(String token);
     RefreshToken verifyExpiration(RefreshToken token);
-    int deleteByUserId(UUID userId);
+    void deleteByToken(String token);
+    void deleteByUserId(UUID userId);
+    void deleteExpiredTokens();
 }

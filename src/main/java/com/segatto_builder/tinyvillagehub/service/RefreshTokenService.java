@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenService implements IRefreshTokenService{
+public class RefreshTokenService implements IRefreshTokenService {
 
     @Value("${jwt.refresh.expiration}")
     private Long refreshTokenDurationMs;
@@ -60,10 +60,19 @@ public class RefreshTokenService implements IRefreshTokenService{
         return token;
     }
 
+    @Override
+    public void deleteByToken(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
+
     @Transactional
     @Override
-    public int deleteByUserId(UUID userId) {
-        User user = userService.findUserById(userId);
-        return refreshTokenRepository.deleteByUser(user);
+    public void deleteByUserId(UUID userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public void deleteExpiredTokens() {
+        refreshTokenRepository.deleteExpiredTokens(Instant.now());
     }
 }
