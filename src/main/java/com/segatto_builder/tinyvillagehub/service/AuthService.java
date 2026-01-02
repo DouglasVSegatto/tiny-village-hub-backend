@@ -14,6 +14,7 @@ import com.segatto_builder.tinyvillagehub.security.IJwtService;
 import com.segatto_builder.tinyvillagehub.security.PrincipalDetails;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
@@ -32,16 +34,19 @@ public class AuthService implements IAuthService {
     private final IRefreshTokenService refreshTokenService;
     private final IAuthFacade authFacade;
 
+
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
-
+        log.info("Login attempt for user: {}", dto.getUsername());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             dto.getUsername(),
                             dto.getPassword())
             );
+            log.info("User {} logged in successfully", dto.getUsername());
         } catch (BadCredentialsException e) {
+            log.warn("Failed login attempt for user: {}", dto.getUsername());
             throw new BadCredentialsException("Incorrect username or password", e);
         }
 
@@ -66,17 +71,19 @@ public class AuthService implements IAuthService {
         String requestRefreshToken = dto.getRefreshToken();
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .orElseThrow(() -> new EntityNotFoundException("Refresh token not found."));
+
         // Validate token
-        RefreshToken validToken = refreshTokenService.verifyExpiration(refreshToken);
-        // Generate new access token
-        String newAccessToken = jwtService.generateToken(validToken.getUser());
+        if (!refreshTokenService.verifyExpiration(refreshToken)) {
+            throw new RuntimeException("Refresh token has expired");
+        }
 
-        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(validToken.getUser().getId());
-
-        refreshTokenService.deleteByToken(requestRefreshToken);
+        // Generate tokens
+        String newAccessToken = jwtService.generateToken(refreshToken.getUser());
+        RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(dto.getRefreshToken());
 
         return new TokenRefreshResponseDto(newAccessToken, newRefreshToken.getToken());
     }
+
 
     @Override
     public void revokeToken(LogoutRequestDto dto) {
@@ -107,6 +114,6 @@ public class AuthService implements IAuthService {
         }
 
         refreshTokenService.deleteByUserId(user.getId());
-
+        log.warn("User {} revoked all tokens", user.getUsername());
     }
 }

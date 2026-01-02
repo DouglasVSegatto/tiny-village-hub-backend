@@ -3,7 +3,9 @@ package com.segatto_builder.tinyvillagehub.service;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.repository.RefreshTokenRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService implements IRefreshTokenService {
@@ -26,16 +29,13 @@ public class RefreshTokenService implements IRefreshTokenService {
      */
     @Override
     public RefreshToken createRefreshToken(UUID userId) {
-        User user = userService.findUserById(userId); // Assuming you have a findUserById method
-
-        // Check if a token already exists for the user and delete it (optional cleanup)
-        // refreshTokenRepository.deleteByUser(user);
+        User user = userService.findUserById(userId);
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-        refreshToken.setToken(UUID.randomUUID().toString()); // Use a long random string
-
+        refreshToken.setToken(UUID.randomUUID().toString());
+        log.debug("Refresh token created for user: {}", userId);
         return refreshTokenRepository.save(refreshToken);
     }
 
@@ -52,12 +52,13 @@ public class RefreshTokenService implements IRefreshTokenService {
      */
     @Transactional
     @Override
-    public RefreshToken verifyExpiration(RefreshToken token) {
+    public boolean verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
+            log.info("Expired token removed for user: {}", token.getUser().getUsername());
             refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token was expired. Please make a new signin request");
+            return false;
         }
-        return token;
+        return true;
     }
 
     @Transactional
@@ -75,6 +76,19 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Transactional
     @Override
     public void deleteExpiredTokens() {
-        refreshTokenRepository.deleteExpiredTokens(Instant.now());
+        int deletedCount = refreshTokenRepository.deleteExpiredTokens(Instant.now());
+        log.info("Cleaned up {} expired tokens", deletedCount);
+    }
+
+    @Transactional
+    @Override
+    public RefreshToken rotateRefreshToken(String oldToken) {
+        RefreshToken existingToken = findByToken(oldToken)
+                .orElseThrow(() -> new EntityNotFoundException("Token not found"));
+
+        existingToken.setToken(UUID.randomUUID().toString());
+        existingToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+
+        return refreshTokenRepository.save(existingToken);
     }
 }

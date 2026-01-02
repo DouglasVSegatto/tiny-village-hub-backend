@@ -4,11 +4,13 @@ import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.Item;
+import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import com.segatto_builder.tinyvillagehub.repository.ItemRepository;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemService implements IItemService {
@@ -75,10 +78,12 @@ public class ItemService implements IItemService {
     @Override
     public void create(ItemRequestDto dto) {
         Item item = itemMapper.toModel(dto);
-        item.setOwner(authFacade.getCurrentUser());
+        User user = authFacade.getCurrentUser();
+        item.setOwner(user);
         //All Items start as INACTIVE, user can update it later.
         item.setStatus(ItemStatus.INACTIVE);
         itemRepository.save(item);
+        log.info("Item {} created by user {}", item.getId(), user.getUsername());
     }
 
     @Override
@@ -97,6 +102,7 @@ public class ItemService implements IItemService {
 
         item.setStatus(ItemStatus.ACTIVE);
         itemRepository.save(item);
+        log.info("Item {} activated by user {}", id, item.getOwner().getUsername());
     }
 
     @Override
@@ -193,9 +199,10 @@ public class ItemService implements IItemService {
     }
 
     private void validateOwnership(Item item) {
-        UUID userId = authFacade.getCurrentUserId();
+        User user = authFacade.getCurrentUser();
 
-        if (!item.getOwner().getId().equals(userId)) {
+        if (!item.getOwner().getId().equals(user.getId())) {
+            log.warn("Unauthorized access attempt to item {} by user {}", item.getId(), user.getUsername());
             throw new SecurityException("User is not authorized to update this item.");
         }
     }

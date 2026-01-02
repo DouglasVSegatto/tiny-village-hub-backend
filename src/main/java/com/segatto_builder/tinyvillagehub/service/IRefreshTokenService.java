@@ -10,11 +10,13 @@ public interface IRefreshTokenService {
 
     Optional<RefreshToken> findByToken(String token);
 
-    RefreshToken verifyExpiration(RefreshToken token);
+    boolean verifyExpiration(RefreshToken token);
 
     void deleteByToken(String token);
 
     void deleteByUserId(UUID userId);
 
     void deleteExpiredTokens();
+
+    RefreshToken rotateRefreshToken(String oldToken);
 }
