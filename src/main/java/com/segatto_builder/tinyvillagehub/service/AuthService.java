@@ -19,6 +19,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
@@ -69,11 +71,23 @@ public class AuthService implements IAuthService {
         // Generate new access token
         String newAccessToken = jwtService.generateToken(validToken.getUser());
 
-        return new TokenRefreshResponseDto(newAccessToken, requestRefreshToken);
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(validToken.getUser().getId());
+
+        refreshTokenService.deleteByToken(requestRefreshToken);
+
+        return new TokenRefreshResponseDto(newAccessToken, newRefreshToken.getToken());
     }
 
     @Override
     public void revokeToken(LogoutRequestDto dto) {
+        UUID userId = authFacade.getCurrentUserId();
+        RefreshToken refreshToken = refreshTokenService.findByToken(dto.getRefreshToken())
+                .orElseThrow(() -> new EntityNotFoundException("Token not found."));
+
+        if (!refreshToken.getUser().getId().equals(userId)) {
+            throw new SecurityException("User is not authorized to update this Token.");
+        }
+
         refreshTokenService.deleteByToken(dto.getRefreshToken());
     }
 

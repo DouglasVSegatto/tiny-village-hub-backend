@@ -50,6 +50,7 @@ public class RefreshTokenService implements IRefreshTokenService {
     /**
      * Verifies expiration. Throws exception if token is expired.
      */
+    @Transactional
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
@@ -59,6 +60,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         return token;
     }
 
+    @Transactional
     @Override
     public void deleteByToken(String token) {
         refreshTokenRepository.deleteByToken(token);
@@ -70,6 +72,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         refreshTokenRepository.deleteByUserId(userId);
     }
 
+    @Transactional
     @Override
     public void deleteExpiredTokens() {
         refreshTokenRepository.deleteExpiredTokens(Instant.now());

@@ -37,7 +37,7 @@ public class SecurityConfig {
                         // Allow POST requests to Auth - clean up leater
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh_token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").permitAll()
                         // Allow GET requests for item images
                         .requestMatchers(HttpMethod.GET, "/api/items/available").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/items/search/**").permitAll()
