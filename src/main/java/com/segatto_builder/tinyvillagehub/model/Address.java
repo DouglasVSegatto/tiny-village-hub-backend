@@ -12,13 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Address {
 
-    @Column private String neighborhood;
+    @Column
+    private String neighborhood;
 
-    @Column private String city;
+    @Column
+    private String city;
 
-    @Column private String state;
+    @Column
+    private String state;
 
-    @Column private String country;
+    @Column
+    private String country;
 
 
     public String getFullAddress() {

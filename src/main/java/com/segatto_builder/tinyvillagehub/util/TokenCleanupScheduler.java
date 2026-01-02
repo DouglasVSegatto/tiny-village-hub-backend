@@ -1,7 +1,6 @@
 package com.segatto_builder.tinyvillagehub.util;
 
 import com.segatto_builder.tinyvillagehub.service.IRefreshTokenService;
-import com.segatto_builder.tinyvillagehub.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,7 @@ public class TokenCleanupScheduler {
 
     //Daily
     @Scheduled(fixedRateString = "${scheduler.token-cleanup.interval}")
-    public void cleanupExpiredTokens(){
+    public void cleanupExpiredTokens() {
         refreshTokenService.deleteExpiredTokens();
     }
 }

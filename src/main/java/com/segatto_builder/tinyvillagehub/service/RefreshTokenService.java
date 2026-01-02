@@ -16,11 +16,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService implements IRefreshTokenService {
 
-    @Value("${jwt.refresh.expiration}")
-    private Long refreshTokenDurationMs;
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final IUserService userService;
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshTokenDurationMs;
 
     /**
      * Creates and saves a new refresh token for a user.

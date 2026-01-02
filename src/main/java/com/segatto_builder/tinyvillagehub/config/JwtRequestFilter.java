@@ -1,7 +1,7 @@
 package com.segatto_builder.tinyvillagehub.config;
 
-import com.segatto_builder.tinyvillagehub.service.PrincipalDetailsServiceImpl;
 import com.segatto_builder.tinyvillagehub.security.JwtService;
+import com.segatto_builder.tinyvillagehub.service.PrincipalDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;

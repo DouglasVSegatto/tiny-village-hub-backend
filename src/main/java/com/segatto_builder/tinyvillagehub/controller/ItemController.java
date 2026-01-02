@@ -1,7 +1,7 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
-import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.service.IItemService;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +34,13 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody ItemRequestDto dto){
+    public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody ItemRequestDto dto) {
         itemService.update(id, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id){
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
         itemService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

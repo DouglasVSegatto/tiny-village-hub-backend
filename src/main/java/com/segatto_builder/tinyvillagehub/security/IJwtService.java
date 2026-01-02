@@ -5,7 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface IJwtService {
     String extractUsername(String token);
+
     String generateToken(UserDetails userDetails);
+
     String generateToken(User user);
+
     Boolean validateToken(String token, UserDetails userDetails);
 }

@@ -8,7 +8,10 @@ import java.util.UUID;
 
 public interface IUserService {
     User registerNewUser(UserRegistrationDto registrationDto);
+
     User findByUsername();
+
     User findUserById(UUID userId);
+
     void updateAddress(AddressRequestDto dto);
 }

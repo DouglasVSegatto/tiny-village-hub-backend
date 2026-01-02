@@ -10,8 +10,12 @@ import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 
 public interface IAuthService {
     LoginResponseDto login(LoginRequestDto dto);
+
     void register(UserRegistrationDto dto);
+
     TokenRefreshResponseDto refreshToken(TokenRefreshRequestDto dto);
+
     void revokeToken(LogoutRequestDto dto);
+
     void revokeAllTokens(ReAuthRequestDto dto);
 }

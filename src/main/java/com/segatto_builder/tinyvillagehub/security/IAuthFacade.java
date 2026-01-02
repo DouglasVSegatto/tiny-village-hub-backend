@@ -12,7 +12,10 @@ public interface IAuthFacade {
 
     //Core method used by service layers.
     User getCurrentUser();
+
     UUID getCurrentUserId();
+
     String getCurrentUsername();
+
     String getCurrentUserEmail();
 }

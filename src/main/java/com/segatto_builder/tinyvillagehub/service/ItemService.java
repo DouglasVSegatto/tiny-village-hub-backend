@@ -200,19 +200,19 @@ public class ItemService implements IItemService {
         }
     }
 
-    private List<Item> findByCity(String city){
+    private List<Item> findByCity(String city) {
         return itemRepository.findByStatusAndOwnerAddressCityIgnoreCase(ItemStatus.ACTIVE, city);
     }
 
-    private List<Item> findByNeighborhood(String neighborhood){
+    private List<Item> findByNeighborhood(String neighborhood) {
         return itemRepository.findByStatusAndOwnerAddressNeighborhoodIgnoreCase(ItemStatus.ACTIVE, neighborhood);
     }
 
-    private List<Item> findByState(String neighborhood){
+    private List<Item> findByState(String neighborhood) {
         return itemRepository.findByStatusAndOwnerAddressStateIgnoreCase(ItemStatus.ACTIVE, neighborhood);
     }
 
-    private List<Item> findByCountry(String neighborhood){
+    private List<Item> findByCountry(String neighborhood) {
         return itemRepository.findByStatusAndOwnerAddressCountryIgnoreCase(ItemStatus.ACTIVE, neighborhood);
     }
 

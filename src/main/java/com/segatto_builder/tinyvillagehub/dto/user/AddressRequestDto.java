@@ -11,10 +11,10 @@ public class AddressRequestDto {
     /**
      * Example JSON:
      {
-       "neighborhood": "Vila Madalena",
-       "city": "São Paulo",
-       "state": "SP",
-       "country": "Brazil"
+     "neighborhood": "Vila Madalena",
+     "city": "São Paulo",
+     "state": "SP",
+     "country": "Brazil"
      }
      */
 

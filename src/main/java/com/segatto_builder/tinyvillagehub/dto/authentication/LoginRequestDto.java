@@ -10,8 +10,8 @@ public class LoginRequestDto {
     /**
      * Example JSON:
      {
-       "username": "user1",
-       "password": "password123"
+     "username": "user1",
+     "password": "password123"
      }
      */
 

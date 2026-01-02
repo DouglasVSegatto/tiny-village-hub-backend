@@ -1,14 +1,14 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.service.IItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/profile")

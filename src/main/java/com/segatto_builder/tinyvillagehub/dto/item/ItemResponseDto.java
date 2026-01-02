@@ -1,9 +1,10 @@
 package com.segatto_builder.tinyvillagehub.dto.item;
 
 import com.segatto_builder.tinyvillagehub.model.Item;
-import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
-import lombok.*;
+import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -14,13 +15,13 @@ public class ItemResponseDto {
     /**
      * Example JSON:
      {
-       "id": 1,
-       "name": "Harry Potter Book",
-       "description": "First edition Harry Potter book in good condition",
-       "type": "BOOK",
-       "imageUrl": "/uploads/1234567890_book.jpg",
-       "status": "AVAILABLE",
-       "ownerUsername": "user1"
+     "id": 1,
+     "name": "Harry Potter Book",
+     "description": "First edition Harry Potter book in good condition",
+     "type": "BOOK",
+     "imageUrl": "/uploads/1234567890_book.jpg",
+     "status": "AVAILABLE",
+     "ownerUsername": "user1"
      }
      */
 

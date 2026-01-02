@@ -6,7 +6,6 @@ import com.segatto_builder.tinyvillagehub.mappers.UserMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import com.segatto_builder.tinyvillagehub.service.IUserService;
-import com.segatto_builder.tinyvillagehub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ public class UserController {
     }
 
     @PutMapping("/address")
-    public ResponseEntity<?> updateAddress(@RequestBody AddressRequestDto dto){
+    public ResponseEntity<?> updateAddress(@RequestBody AddressRequestDto dto) {
         userService.updateAddress(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 

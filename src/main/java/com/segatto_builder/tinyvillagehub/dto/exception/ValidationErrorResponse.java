@@ -2,6 +2,7 @@ package com.segatto_builder.tinyvillagehub.dto.exception;
 
 import lombok.Builder;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 

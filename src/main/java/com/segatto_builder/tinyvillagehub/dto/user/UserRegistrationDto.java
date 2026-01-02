@@ -13,13 +13,13 @@ public class UserRegistrationDto {
     /**
      * Example JSON:
      {
-       "username": "user1",
-       "email": "user1@example.com",
-       "password": "password123",
-       "neighborhood": "Vila Madalena",
-       "city": "São Paulo",
-       "state": "SP",
-       "country": "Brazil"
+     "username": "user1",
+     "email": "user1@example.com",
+     "password": "password123",
+     "neighborhood": "Vila Madalena",
+     "city": "São Paulo",
+     "state": "SP",
+     "country": "Brazil"
      }
      */
 
