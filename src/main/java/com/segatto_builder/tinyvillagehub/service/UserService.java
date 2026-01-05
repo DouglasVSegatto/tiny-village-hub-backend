@@ -44,8 +44,8 @@ public class UserService implements IUserService {
         String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
         newUser.setPasswordHash(encodedPassword);
 
-        return userRepository.save(newUser);
         log.info("REGISTERED user {}", newUser.getUsername());
+        return userRepository.save(newUser);
     }
 
     @Override
