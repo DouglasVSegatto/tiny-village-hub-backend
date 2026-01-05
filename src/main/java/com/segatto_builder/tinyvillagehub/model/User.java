@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +33,11 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    private LocalDateTime joinDate = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime joinDate;
+
+//    OnHold
+//    private LocalDateTime lastLoginAt;
 
     @Embedded
     @Column(nullable = false)
