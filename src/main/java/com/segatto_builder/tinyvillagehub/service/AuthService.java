@@ -37,16 +37,16 @@ public class AuthService implements IAuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
-        log.info("Login attempt for user: {}", dto.getUsername());
+        log.info("LOGIN_ATTEMPT by user {}", dto.getUsername());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             dto.getUsername(),
                             dto.getPassword())
             );
-            log.info("User {} logged in successfully", dto.getUsername());
+            log.info("LOGIN_SUCCESS by user {}", dto.getUsername());
         } catch (BadCredentialsException e) {
-            log.warn("Failed login attempt for user: {}", dto.getUsername());
+            log.warn("LOGIN_FAILED by user {}", dto.getUsername());
             throw new BadCredentialsException("Incorrect username or password", e);
         }
 
@@ -80,7 +80,7 @@ public class AuthService implements IAuthService {
         // Generate tokens
         String newAccessToken = jwtService.generateToken(refreshToken.getUser());
         RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(dto.getRefreshToken());
-
+        log.info("TOKEN_REFRESHED by user {}", newRefreshToken.getUser().getUsername());
         return new TokenRefreshResponseDto(newAccessToken, newRefreshToken.getToken());
     }
 
@@ -96,6 +96,7 @@ public class AuthService implements IAuthService {
         }
 
         refreshTokenService.deleteByToken(dto.getRefreshToken());
+        log.info("TOKEN_REVOKED by user {}", refreshToken.getUser().getUsername());
     }
 
     @Override
@@ -114,6 +115,6 @@ public class AuthService implements IAuthService {
         }
 
         refreshTokenService.deleteByUserId(user.getId());
-        log.warn("User {} revoked all tokens", user.getUsername());
+        log.warn("ALL_TOKENS_REVOKED by user {}", user.getUsername());
     }
 }

@@ -9,12 +9,14 @@ import com.segatto_builder.tinyvillagehub.repository.UserRepository;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -43,6 +45,7 @@ public class UserService implements IUserService {
         newUser.setPasswordHash(encodedPassword);
 
         return userRepository.save(newUser);
+        log.info("REGISTERED user {}", newUser.getUsername());
     }
 
     @Override
@@ -66,5 +69,6 @@ public class UserService implements IUserService {
 
         user.setAddress(address);
         userRepository.save(user);
+        log.info("ADDRESS_UPDATED by user {}", user.getUsername());
     }
 }

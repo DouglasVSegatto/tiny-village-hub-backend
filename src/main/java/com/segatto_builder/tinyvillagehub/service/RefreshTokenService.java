@@ -35,7 +35,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
-        log.debug("Refresh token created for user: {}", userId);
+        log.debug("TOKEN_CREATED by user {}", user.getUsername());
         return refreshTokenRepository.save(refreshToken);
     }
 
@@ -54,7 +54,7 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Override
     public boolean verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
-            log.info("Expired token removed for user: {}", token.getUser().getUsername());
+            log.info("EXPIRED_TOKEN_REMOVED by user {}", token.getUser().getUsername());
             refreshTokenRepository.delete(token);
             return false;
         }
@@ -64,12 +64,18 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Transactional
     @Override
     public void deleteByToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new EntityNotFoundException("Token not found"));
+        log.debug("TOKEN_DELETED by user {}", refreshToken.getUser().getUsername());
         refreshTokenRepository.deleteByToken(token);
     }
+
 
     @Transactional
     @Override
     public void deleteByUserId(UUID userId) {
+        User user = userService.findUserById(userId);
+        log.debug("ALL_TOKENS_DELETED by user {}", user.getUsername());
         refreshTokenRepository.deleteByUserId(userId);
     }
 
@@ -77,7 +83,7 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Override
     public void deleteExpiredTokens() {
         int deletedCount = refreshTokenRepository.deleteExpiredTokens(Instant.now());
-        log.info("Cleaned up {} expired tokens", deletedCount);
+        log.info("EXPIRED_TOKENS_CLEANUP removed {} tokens", deletedCount);
     }
 
     @Transactional
@@ -89,6 +95,8 @@ public class RefreshTokenService implements IRefreshTokenService {
         existingToken.setToken(UUID.randomUUID().toString());
         existingToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
 
-        return refreshTokenRepository.save(existingToken);
+        RefreshToken savedToken = refreshTokenRepository.save(existingToken);
+        log.debug("TOKEN_ROTATED by user {}", existingToken.getUser().getUsername());
+        return savedToken;
     }
 }

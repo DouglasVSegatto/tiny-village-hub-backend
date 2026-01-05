@@ -58,6 +58,7 @@ public class ItemService implements IItemService {
     public void delete(UUID itemId) {
         Item item = findById(itemId);
         validateOwnership(item);
+        log.info("DELETED item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
         itemRepository.delete(item);
     }
 
@@ -71,8 +72,8 @@ public class ItemService implements IItemService {
         item.setDescription(dto.getDescription());
         item.setType(dto.getType());
         item.setAvailabilityType(dto.getAvailabilityType());
-
         itemRepository.save(item);
+        log.info("UPDATED item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ItemService implements IItemService {
         //All Items start as INACTIVE, user can update it later.
         item.setStatus(ItemStatus.INACTIVE);
         itemRepository.save(item);
-        log.info("Item {} created by user {}", item.getId(), user.getUsername());
+        log.info("CREATED item by user {} (itemId: {})", user.getUsername(), item.getId());
     }
 
     @Override
@@ -102,7 +103,7 @@ public class ItemService implements IItemService {
 
         item.setStatus(ItemStatus.ACTIVE);
         itemRepository.save(item);
-        log.info("Item {} activated by user {}", id, item.getOwner().getUsername());
+        log.info("ACTIVATED item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
     }
 
     @Override
@@ -121,6 +122,7 @@ public class ItemService implements IItemService {
 
         item.setStatus(ItemStatus.INACTIVE);
         itemRepository.save(item);
+        log.info("DEACTIVATED item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
     }
 
     @Override
@@ -137,6 +139,7 @@ public class ItemService implements IItemService {
 
         item.setStatus(ItemStatus.PENDING);
         itemRepository.save(item);
+        log.info("PENDING item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
     }
 
     @Override
@@ -187,6 +190,7 @@ public class ItemService implements IItemService {
 
         item.setStatus(ItemStatus.COMPLETED);
         itemRepository.save(item);
+        log.info("COMPLETED item by user {} (itemId: {})", item.getOwner().getUsername(), item.getId());
     }
 
     //PRIVATE
