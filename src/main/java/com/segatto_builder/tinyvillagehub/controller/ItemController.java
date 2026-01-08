@@ -27,7 +27,7 @@ public class ItemController {
      * This endpoint is PUBLICLY ACCESSIBLE.
      */
 
-    @PutMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody ItemRequestDto dto) {
         itemService.create(dto);
         return ResponseEntity.noContent().build();
