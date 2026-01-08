@@ -45,6 +45,11 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/my-items")
+    public ResponseEntity<List<ItemResponseDto>> getMyItems() {
+        return ResponseEntity.ok(itemService.findAllByOwnerId());
+    }
+
     // Publish item (INACTIVE/PENDING → ACTIVE)
     @PatchMapping("/{itemId}/activate")
     public ResponseEntity<?> activateItem(@PathVariable UUID itemId) {
