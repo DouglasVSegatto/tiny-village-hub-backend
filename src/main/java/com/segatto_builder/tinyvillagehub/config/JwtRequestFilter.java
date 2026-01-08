@@ -32,13 +32,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;
-        String jwt = null;
+        String accessToken = null;
 
         // 1. Extract JWT from "Authorization: Bearer <token>"
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+            accessToken = authorizationHeader.substring(7);
             try {
-                username = jwtService.extractUsername(jwt);
+                username = jwtService.extractUsername(accessToken);
             } catch (ExpiredJwtException | SignatureException e) {
                 // Handle expired token or invalid signature gracefully
             }
@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.validateToken(jwt, userDetails)) {
+            if (jwtService.validateToken(accessToken, userDetails)) {
                 // If token is valid, create authentication object
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
