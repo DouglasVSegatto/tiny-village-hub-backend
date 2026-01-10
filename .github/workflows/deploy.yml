@@ -7,27 +7,21 @@ on:
 
 jobs:
   deploy:
-
+    # Use the specific label for your backend runner
     runs-on: backend-runner
-    
-    env:
-
-      TARGET_DIR: /home/ghrunner/tiny-village-hub
 
     steps:
       - name: 1. Checkout Backend Code
         uses: actions/checkout@v4
+        with:
+          # This tells the runner to put the code EXACTLY in this folder
+          # relative to where the runner is installed.
+          path: tiny-village-hub-backend
 
-      - name: 2. Copy Code to Deployment Directory
-
+      - name: 2. Deploy Service via Dockge/Compose
         run: |
-          echo "Copying fresh backend code to: ${{ env.TARGET_DIR }}/backend-repo"
-          rsync -av --exclude '.git' --delete $GITHUB_WORKSPACE/ ${{ env.TARGET_DIR }}/backend-repo/
+          # Move to your main stack folder
+          cd /opt/stacks/web-project
 
-      - name: 3. Deploy Backend Service Only
-
-        run: |
-          cd ${{ env.TARGET_DIR }}
-          echo "Executing: docker compose up -d --build backend-api"
-
+          # Tell Docker to rebuild only this service
           docker compose up -d --build backend-api
