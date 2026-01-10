@@ -25,3 +25,4 @@ jobs:
 
           # Tell Docker to rebuild only this service
           docker compose up -d --build backend-api
+
