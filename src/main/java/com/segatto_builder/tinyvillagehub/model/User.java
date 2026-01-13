@@ -1,5 +1,6 @@
 package com.segatto_builder.tinyvillagehub.model;
 
+import com.segatto_builder.tinyvillagehub.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,10 @@ public class User {
 
     @CreationTimestamp
     private LocalDateTime joinDate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.USER;
 
 //    OnHold
 //    private LocalDateTime lastLoginAt;
