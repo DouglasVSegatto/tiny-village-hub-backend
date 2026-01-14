@@ -3,16 +3,12 @@ package com.segatto_builder.tinyvillagehub.controller;
 import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
-import com.segatto_builder.tinyvillagehub.model.enums.UserRole;
-import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/items/temp")
@@ -20,7 +16,6 @@ import java.util.UUID;
 public class TempItemController {
 
     private final ItemServiceClient itemServiceClient;
-    private final IAuthFacade authFacade;
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ItemRequestDto dto) {
