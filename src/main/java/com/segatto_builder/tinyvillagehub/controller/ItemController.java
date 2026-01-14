@@ -1,8 +1,10 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
+import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
 import com.segatto_builder.tinyvillagehub.model.Item;
+import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import com.segatto_builder.tinyvillagehub.service.IItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final IItemService itemService;
+    private final IAuthFacade authFacade;
+    private final ItemServiceClient itemServiceClient; // to update ItemService
 
 
     /**
