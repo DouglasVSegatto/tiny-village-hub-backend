@@ -7,22 +7,12 @@ on:
 
 jobs:
   deploy:
-    # Use the specific label for your backend runner
-    runs-on: backend-runner
+    runs-on: backend
 
     steps:
-      - name: 1. Checkout Backend Code
-        uses: actions/checkout@v4
-        with:
-          # This tells the runner to put the code EXACTLY in this folder
-          # relative to where the runner is installed.
-          path: tiny-village-hub-backend
+      - uses: actions/checkout@v4
 
-      - name: 2. Deploy Service via Dockge/Compose
+      - name: Build & deploy backend
         run: |
-          # Move to your main stack folder
-          cd /opt/stacks/web-project
-
-          # Tell Docker to rebuild only this service
-          docker compose up -d --build backend-api
-
+          cd /home/popcornpalace/deployment/stacks/web-project
+          docker compose up -d --build --no-deps backend-api
