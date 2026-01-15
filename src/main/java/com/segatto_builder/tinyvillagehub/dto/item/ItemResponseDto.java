@@ -3,7 +3,6 @@ package com.segatto_builder.tinyvillagehub.dto.item;
 import com.segatto_builder.tinyvillagehub.model.Item;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
 import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ItemResponseDto {
 
     /**
