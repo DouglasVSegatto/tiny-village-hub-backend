@@ -2,6 +2,8 @@ package com.segatto_builder.tinyvillagehub.client;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceRequestDto;
+import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.model.enums.UserRole;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
@@ -29,6 +31,7 @@ public class ItemServiceClient {
     private String serviceKey;
     
     private final IAuthFacade authFacade;
+    private final ItemMapper itemMapper;
 
     private HttpHeaders createHeaders() {
         User currentUser = authFacade.getCurrentUser();
@@ -41,8 +44,12 @@ public class ItemServiceClient {
     }
 
     public void createItem(ItemRequestDto dto) {
+        User currentUser = authFacade.getCurrentUser();
+        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto);
+        itemMapper.enrichWithOwner(serviceDto, currentUser);
+
         String url = itemsServiceUrl + "/api/items";
-        HttpEntity<ItemRequestDto> entity = new HttpEntity<>(dto, createHeaders());
+        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeaders());
         restTemplate.postForObject(url, entity, Void.class);
     }
 

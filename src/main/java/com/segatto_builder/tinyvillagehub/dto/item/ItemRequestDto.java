@@ -6,9 +6,8 @@ import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-// If you don't have these, you can delete the import and the annotations:
-// import jakarta.validation.constraints.NotBlank;
-// import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,22 +17,17 @@ public class ItemRequestDto {
     /**
      * Example JSON:
      {
-     "name": "Harry Potter Book",
-     "description": "First edition Harry Potter book in good condition",
+     "name": "Harry Potter Book 1",
+     "description": "Brand new Book",
      "type": "BOOK",
-     "availabilityType": "TRADE"
+     "availabilityType": "TRADE",
+     "condition": "NEW"
      }
      */
 
-    // @NotBlank(message = "Item name is required")
     private String name;
-
-    // @NotBlank(message = "Description is required")
     private String description;
-
-    // @NotNull(message = "Item type is required")
-    private ItemType type; // ItemType is your custom Enum (e.g., BOOK, TOOL, FOOD)
-
-    // @NotNull(message = "Item Availability type is required")
+    private ItemType type;
     private ItemAvailabilityType availabilityType;
+    private String condition;
 }
