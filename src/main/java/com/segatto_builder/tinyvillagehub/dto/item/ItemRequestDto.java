@@ -30,4 +30,5 @@ public class ItemRequestDto {
     private ItemType type;
     private ItemAvailabilityType availabilityType;
     private String condition;
+    private String status;
 }
