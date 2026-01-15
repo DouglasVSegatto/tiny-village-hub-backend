@@ -12,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
 public interface ItemMapper {
 
     // Microservice Mappers
-    ItemServiceRequestDto toServiceRequest(ItemRequestDto dto);
+    ItemServiceRequestDto toServiceRequest(ItemRequestDto dto, User user);
 
     @AfterMapping
     default void enrichWithOwner(@MappingTarget ItemServiceRequestDto target, User user) {

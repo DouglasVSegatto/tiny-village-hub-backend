@@ -31,14 +31,12 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable String id, @RequestBody ItemRequestDto dto) {
-
         itemServiceClient.updateItem(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-
         itemServiceClient.deleteItem(id);
         return ResponseEntity.noContent().build();
     }

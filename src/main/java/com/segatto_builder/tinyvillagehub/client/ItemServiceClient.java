@@ -36,6 +36,13 @@ public class ItemServiceClient {
         return headers;
     }
 
+    private HttpHeaders createHeadersWithUser(User currentUser) {
+        HttpHeaders headers = createServiceHeaders();
+        headers.set("X-User-Id", currentUser.getId().toString());
+        headers.set("X-User-Role", currentUser.getRole().name());
+        return headers;
+    }
+
     private HttpHeaders createServiceHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Service-Key", serviceKey);
@@ -45,8 +52,7 @@ public class ItemServiceClient {
 
     public void createItem(ItemRequestDto dto) {
         User currentUser = authFacade.getCurrentUser();
-        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto);
-        itemMapper.enrichWithOwner(serviceDto, currentUser);
+        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto, currentUser);
 
         String url = itemsServiceUrl + "/api/items";
         HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeadersWithUser());
@@ -54,8 +60,12 @@ public class ItemServiceClient {
     }
 
     public void updateItem(String id, ItemRequestDto dto) {
+        User currentUser = authFacade.getCurrentUser();
+        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto, currentUser);
+        itemMapper.enrichWithOwner(serviceDto, currentUser);
+
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<ItemRequestDto> entity = new HttpEntity<>(dto, createHeadersWithUser());
+        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeadersWithUser(currentUser));
         restTemplate.put(url, entity);
     }
 
