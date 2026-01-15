@@ -9,10 +9,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemServiceRequestDto {
+public class ItemServiceCreateDto {
 
     /**
-     * DTO for communication with Item-Service microservice.
+     * DTO for creating items in Item-Service microservice.
      * This includes owner information that is automatically populated from the authenticated user.
      *
      * Example JSON sent to Item-Service:
@@ -24,6 +24,7 @@ public class ItemServiceRequestDto {
      "condition": "NEW",
      "status":"ACTIVE",
      "ownerId": "550e8400-e29b-41d4-a716-446655440000",
+     "ownerUsername": "user1",
      "ownerNeighbourhood": "Downtown",
      "ownerCity": "Seattle",
      "ownerState": "Washington",
@@ -40,6 +41,7 @@ public class ItemServiceRequestDto {
 
     // Owner information for microservice
     private UUID ownerId;
+    private String ownerUsername;
     private String ownerNeighbourhood;
     private String ownerCity;
     private String ownerState;

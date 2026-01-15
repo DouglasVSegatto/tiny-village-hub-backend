@@ -1,7 +1,8 @@
 package com.segatto_builder.tinyvillagehub.client;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceCreateDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceUpdateDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
@@ -52,20 +53,18 @@ public class ItemServiceClient {
 
     public void createItem(ItemRequestDto dto) {
         User currentUser = authFacade.getCurrentUser();
-        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto, currentUser);
+        ItemServiceCreateDto createDto = itemMapper.toServiceCreate(dto, currentUser);
 
         String url = itemsServiceUrl + "/api/items";
-        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeadersWithUser());
+        HttpEntity<ItemServiceCreateDto> entity = new HttpEntity<>(createDto, createHeadersWithUser());
         restTemplate.postForObject(url, entity, Void.class);
     }
 
     public void updateItem(String id, ItemRequestDto dto) {
-        User currentUser = authFacade.getCurrentUser();
-        ItemServiceRequestDto serviceDto = itemMapper.toServiceRequest(dto, currentUser);
-        itemMapper.enrichWithOwner(serviceDto, currentUser);
+        ItemServiceUpdateDto updateDto = itemMapper.toServiceUpdate(dto);
 
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeadersWithUser(currentUser));
+        HttpEntity<ItemServiceUpdateDto> entity = new HttpEntity<>(updateDto, createHeadersWithUser());
         restTemplate.put(url, entity);
     }
 

@@ -49,7 +49,6 @@ public class ItemController {
 
     @GetMapping("/my-items")
     public ResponseEntity<List<ItemServiceResponseDto>> getMyItems() {
-
         List<ItemServiceResponseDto> items = itemServiceClient.getMyItems();
         return ResponseEntity.ok(items);
     }
