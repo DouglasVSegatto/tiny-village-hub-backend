@@ -43,7 +43,6 @@ public class ItemController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(@PathVariable String id, @RequestParam String status) {
-
         itemServiceClient.updateStatus(id, status);
         return ResponseEntity.ok().build();
     }
