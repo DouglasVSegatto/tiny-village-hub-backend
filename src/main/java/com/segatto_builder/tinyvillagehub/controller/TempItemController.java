@@ -63,6 +63,11 @@ public class TempItemController {
         return ResponseEntity.ok(items);
     }
 
+    @GetMapping("/available")
+    public List<ItemServiceResponseDto> listAvailableItems() {
+        return itemServiceClient.getActiveItems();
+    }
+
     @GetMapping("/search/neighbourhood/{neighbourhood}")
     public ResponseEntity<List<ItemServiceResponseDto>> getItemsByNeighbourhood(@PathVariable String neighbourhood) {
         List<ItemServiceResponseDto> items = itemServiceClient.searchByNeighborhood(neighbourhood);
