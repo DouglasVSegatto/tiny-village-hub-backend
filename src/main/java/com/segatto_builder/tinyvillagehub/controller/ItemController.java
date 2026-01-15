@@ -50,12 +50,6 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<ItemServiceResponseDto>> getActiveItems() {
-        List<ItemServiceResponseDto> items = itemServiceClient.getActiveItems();
-        return ResponseEntity.ok(items);
-    }
-
     @GetMapping("/my-items")
     public ResponseEntity<List<ItemServiceResponseDto>> getMyItems() {
 

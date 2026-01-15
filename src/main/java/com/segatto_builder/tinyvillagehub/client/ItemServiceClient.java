@@ -28,11 +28,16 @@ public class ItemServiceClient {
     @Value("${service.security.key}")
     private String serviceKey;
 
-    private HttpHeaders createHeaders() {
+    private HttpHeaders createHeadersWithUser() {
         User currentUser = authFacade.getCurrentUser();
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = createServiceHeaders();
         headers.set("X-User-Id", currentUser.getId().toString());
         headers.set("X-User-Role", currentUser.getRole().name());
+        return headers;
+    }
+
+    private HttpHeaders createServiceHeaders() {
+        HttpHeaders headers = new HttpHeaders();
         headers.set("X-Service-Key", serviceKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
@@ -44,31 +49,31 @@ public class ItemServiceClient {
         itemMapper.enrichWithOwner(serviceDto, currentUser);
 
         String url = itemsServiceUrl + "/api/items";
-        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeaders());
+        HttpEntity<ItemServiceRequestDto> entity = new HttpEntity<>(serviceDto, createHeadersWithUser());
         restTemplate.postForObject(url, entity, Void.class);
     }
 
     public void updateItem(String id, ItemRequestDto dto) {
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<ItemRequestDto> entity = new HttpEntity<>(dto, createHeaders());
+        HttpEntity<ItemRequestDto> entity = new HttpEntity<>(dto, createHeadersWithUser());
         restTemplate.put(url, entity);
     }
 
     public void deleteItem(String id) {
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
     public void updateStatus(String id, String status) {
         String url = itemsServiceUrl + "/api/items/" + id + "/status?status=" + status;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
         restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
     public List<ItemServiceResponseDto> getMyItems() {
         String url = itemsServiceUrl + "/api/items/my-items";
-        HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
         ResponseEntity<ItemServiceResponseDto[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, ItemServiceResponseDto[].class);
         return Arrays.asList(response.getBody());
     }
@@ -80,7 +85,8 @@ public class ItemServiceClient {
 
     public List<ItemServiceResponseDto> getActiveItems() {
         String url = itemsServiceUrl + "/api/items";
-        ResponseEntity<ItemServiceResponseDto[]> response = restTemplate.getForEntity(url, ItemServiceResponseDto[].class);
+        HttpEntity<Void> entity = new HttpEntity<>(createServiceHeaders());
+        ResponseEntity<ItemServiceResponseDto[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, ItemServiceResponseDto[].class);
         return Arrays.asList(response.getBody());
     }
 
