@@ -21,7 +21,8 @@ public class ItemRequestDto {
      "description": "Brand new Book",
      "type": "BOOK",
      "availabilityType": "TRADE",
-     "condition": "NEW"
+     "condition": "NEW",
+     "status":"ACTIVE"
      }
      */
 
