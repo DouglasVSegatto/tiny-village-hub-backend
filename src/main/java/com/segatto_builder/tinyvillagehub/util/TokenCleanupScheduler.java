@@ -18,7 +18,7 @@ public class TokenCleanupScheduler {
     //Daily
     @Scheduled(fixedRateString = "${scheduler.token-cleanup.interval}")
     public void cleanupExpiredTokens() {
-        try{
+        try {
             log.info("Starting token cleanup job");
             refreshTokenService.deleteExpiredTokens();
             log.info("Token cleanup job completed successfully");

@@ -1,8 +1,5 @@
 package com.segatto_builder.tinyvillagehub.dto.item;
 
-import com.segatto_builder.tinyvillagehub.model.Item;
-import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
-import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,20 +27,9 @@ public class ItemResponseDto {
     private UUID id;
     private String name;
     private String description;
-    private ItemType type;
+    private String type;
     private String imageUrl;
-    private ItemStatus status;
-    private String ownerUsername; // Display the owner's username, not their sensitive ID/email
-
-    // Constructor to map the Item entity to the DTO
-    public ItemResponseDto(Item item) {
-        this.id = item.getId();
-        this.name = item.getName();
-        this.description = item.getDescription();
-        this.type = item.getType();
-        this.status = item.getStatus();
-        // IMPORTANT: Safely get the owner's username
-        this.ownerUsername = item.getOwner() != null ? item.getOwner().getUsername() : "Unknown";
-    }
+    private String status;
+    private String ownerUsername;
 
 }

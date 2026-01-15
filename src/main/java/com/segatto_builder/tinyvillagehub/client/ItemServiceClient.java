@@ -1,11 +1,10 @@
 package com.segatto_builder.tinyvillagehub.client;
 
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
-import com.segatto_builder.tinyvillagehub.model.enums.UserRole;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +15,18 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ItemServiceClient {
     private final RestTemplate restTemplate;
-
-    @Value("${items-service.url}")
-    private String itemsServiceUrl;
-
-    @Value("${service.security.key}")
-    private String serviceKey;
-    
     private final IAuthFacade authFacade;
     private final ItemMapper itemMapper;
+    @Value("${items-service.url}")
+    private String itemsServiceUrl;
+    @Value("${service.security.key}")
+    private String serviceKey;
 
     private HttpHeaders createHeaders() {
         User currentUser = authFacade.getCurrentUser();

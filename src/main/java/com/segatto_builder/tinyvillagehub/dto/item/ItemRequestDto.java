@@ -1,13 +1,9 @@
 package com.segatto_builder.tinyvillagehub.dto.item;
 
 
-import com.segatto_builder.tinyvillagehub.model.enums.ItemAvailabilityType;
-import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -28,8 +24,8 @@ public class ItemRequestDto {
 
     private String name;
     private String description;
-    private ItemType type;
-    private ItemAvailabilityType availabilityType;
+    private String type;
+    private String availabilityType;
     private String condition;
     private String status;
 }

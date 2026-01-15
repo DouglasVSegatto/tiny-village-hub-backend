@@ -1,113 +1,94 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
+import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
-import com.segatto_builder.tinyvillagehub.dto.item.ItemResponseDto;
-import com.segatto_builder.tinyvillagehub.model.Item;
-import com.segatto_builder.tinyvillagehub.service.IItemService;
+import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final IItemService itemService;
-
-
-
-    /**
-     * Endpoint to list all items available for trade or donation.
-     * This endpoint is PUBLICLY ACCESSIBLE.
-     */
+    private final ItemServiceClient itemServiceClient;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ItemRequestDto dto) {
-        itemService.create(dto);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody ItemRequestDto dto) {
-        itemService.update(id, dto);
+    public ResponseEntity<Void> create(@RequestBody ItemRequestDto dto) {
+        itemServiceClient.createItem(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ItemServiceResponseDto> getItem(@PathVariable String id) {
+        ItemServiceResponseDto item = itemServiceClient.getItem(id);
+        return ResponseEntity.ok(item);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody ItemRequestDto dto) {
+
+        itemServiceClient.updateItem(id, dto);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id) {
-        itemService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+
+        itemServiceClient.deleteItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable String id, @RequestParam String status) {
+
+        itemServiceClient.updateStatus(id, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ItemServiceResponseDto>> getActiveItems() {
+        List<ItemServiceResponseDto> items = itemServiceClient.getActiveItems();
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/my-items")
-    public ResponseEntity<List<ItemResponseDto>> getMyItems() {
-        return ResponseEntity.ok(itemService.findAllByOwnerId());
-    }
+    public ResponseEntity<List<ItemServiceResponseDto>> getMyItems() {
 
-    // Publish item (INACTIVE/PENDING → ACTIVE)
-    @PatchMapping("/{itemId}/activate")
-    public ResponseEntity<?> activateItem(@PathVariable UUID itemId) {
-        itemService.activateItem(itemId);
-        return ResponseEntity.ok().build();
+        List<ItemServiceResponseDto> items = itemServiceClient.getMyItems();
+        return ResponseEntity.ok(items);
     }
-
-    // Pending Transaction item (ACTIVE → PENDING)
-    @PatchMapping("/{itemId}/pending")
-    public ResponseEntity<?> pendingItem(@PathVariable UUID itemId) {
-        itemService.pendingItem(itemId);
-        return ResponseEntity.ok().build();
-    }
-
-    // Unpublish/deactivate item (AVAILABLE/PENDING → INACTIVE)
-    @PatchMapping("/{itemId}/deactivate")
-    public ResponseEntity<?> deactivateItem(@PathVariable UUID itemId) {
-        itemService.deactivateItem(itemId);
-        return ResponseEntity.ok().build();
-    }
-
-    // Complete item (AVAILABLE/PENDING → COMPLETED)
-    @PatchMapping("/{itemId}/complete")
-    public ResponseEntity<?> completeItem(@PathVariable UUID itemId) {
-        itemService.completeItem(itemId);
-        return ResponseEntity.ok().build();
-    }
-
-    /* =-=-= PERMIT ALL ENDPOINTS =-=-= */
 
     @GetMapping("/available")
-    public List<ItemResponseDto> listAvailableItems() {
-        List<Item> items = itemService.findAllAvailable();
-        return items.stream()
-                .map(ItemResponseDto::new)
-                .collect(Collectors.toList());
+    public List<ItemServiceResponseDto> listAvailableItems() {
+        return itemServiceClient.getActiveItems();
+    }
+
+    @GetMapping("/search/neighbourhood/{neighbourhood}")
+    public ResponseEntity<List<ItemServiceResponseDto>> getItemsByNeighbourhood(@PathVariable String neighbourhood) {
+        List<ItemServiceResponseDto> items = itemServiceClient.searchByNeighborhood(neighbourhood);
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/search/city/{city}")
-    public List<ItemResponseDto> listByCity(@PathVariable String city) {
-        return itemService.listByCity(city);
-
-    }
-
-    @GetMapping("/search/neighborhood/{neighborhood}")
-    public List<ItemResponseDto> listByNeighborhood(@PathVariable String neighborhood) {
-        return itemService.listByNeighborhood(neighborhood);
+    public ResponseEntity<List<ItemServiceResponseDto>> getItemsByCity(@PathVariable String city) {
+        List<ItemServiceResponseDto> items = itemServiceClient.searchByCity(city);
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/search/state/{state}")
-    public List<ItemResponseDto> listByState(@PathVariable String state) {
-        return itemService.listByState(state);
+    public ResponseEntity<List<ItemServiceResponseDto>> getItemsByState(@PathVariable String state) {
+        List<ItemServiceResponseDto> items = itemServiceClient.searchByState(state);
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/search/country/{country}")
-    public List<ItemResponseDto> listByCountry(@PathVariable String country) {
-        return itemService.listByCountry(country);
+    public ResponseEntity<List<ItemServiceResponseDto>> getItemsByCountry(@PathVariable String country) {
+        List<ItemServiceResponseDto> items = itemServiceClient.searchByCountry(country);
+        return ResponseEntity.ok(items);
     }
-
 }

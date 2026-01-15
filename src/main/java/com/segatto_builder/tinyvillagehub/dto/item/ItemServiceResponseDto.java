@@ -1,7 +1,5 @@
 package com.segatto_builder.tinyvillagehub.dto.item;
 
-import com.segatto_builder.tinyvillagehub.model.enums.ItemStatus;
-import com.segatto_builder.tinyvillagehub.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +17,8 @@ public class ItemServiceResponseDto {
     private String id;
     private String name;
     private String description;
-    private ItemType type;
+    private String type;
     private String imageUrl;
-    private ItemStatus status;
+    private String status;
     private String ownerUsername;
 }

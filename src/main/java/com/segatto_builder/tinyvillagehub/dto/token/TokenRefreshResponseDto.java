@@ -1,6 +1,5 @@
 package com.segatto_builder.tinyvillagehub.dto.token;
 
-import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
