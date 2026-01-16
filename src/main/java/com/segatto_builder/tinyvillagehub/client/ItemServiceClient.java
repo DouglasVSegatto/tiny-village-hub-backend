@@ -12,7 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +59,7 @@ public class ItemServiceClient {
         ItemServiceCreateDto createDto = itemMapper.toServiceCreate(dto, currentUser);
 
         String url = itemsServiceUrl + "/api/items";
-        HttpEntity<ItemServiceCreateDto> entity = new HttpEntity<>(createDto, createHeadersWithUser());
+        HttpEntity<ItemServiceCreateDto> entity = new HttpEntity<>(createDto, createHeadersWithUser(currentUser));
         restTemplate.postForObject(url, entity, Void.class);
     }
 
@@ -97,6 +100,24 @@ public class ItemServiceClient {
         HttpEntity<Void> entity = new HttpEntity<>(createServiceHeaders());
         ResponseEntity<ItemServiceResponseDto[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, ItemServiceResponseDto[].class);
         return Arrays.asList(response.getBody());
+    }
+
+
+    // IMAGES
+    public String uploadImage(String itemId, MultipartFile file) {
+        String url = itemsServiceUrl + "/api/items/" + itemId + "/images";
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, createHeadersWithUser());
+        return restTemplate.postForObject(url, entity, String.class);
+    }
+
+    public void deleteImage(String itemId, int index) {
+        String url = itemsServiceUrl + "/api/items/" + itemId + "/images/" + index;
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
+        restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
     // Public search endpoints (no auth needed)

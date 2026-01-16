@@ -34,6 +34,7 @@ public class ItemServiceResponseDto {
      }
      */
 
+    //TODO create new DTOs to break down response by request type.
     private String id;
     private String name;
     private String description;
