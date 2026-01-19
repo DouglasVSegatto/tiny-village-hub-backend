@@ -118,7 +118,7 @@ public class ItemServiceClient {
 
     public void deleteImage(String itemId, int index) {
         String url = itemsServiceUrl + "/api/items/" + itemId + "/images/" + index;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.MULTIPART_FORM_DATA));
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
