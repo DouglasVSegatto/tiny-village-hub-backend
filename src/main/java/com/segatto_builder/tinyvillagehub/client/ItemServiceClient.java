@@ -32,34 +32,36 @@ public class ItemServiceClient {
     @Value("${service.security.key}")
     private String serviceKey;
 
-    private HttpHeaders createHeadersWithUser() {
+    private HttpHeaders createHeadersWithUser(MediaType contentType) {
         User currentUser = authFacade.getCurrentUser();
         HttpHeaders headers = createServiceHeaders();
         headers.set("X-User-Id", currentUser.getId().toString());
         headers.set("X-User-Role", currentUser.getRole().name());
+        headers.setContentType(contentType);
         return headers;
     }
 
-    private HttpHeaders createHeadersWithUser(User currentUser) {
+    private HttpHeaders createHeadersWithUser(User currentUser, MediaType contentType) {
         HttpHeaders headers = createServiceHeaders();
         headers.set("X-User-Id", currentUser.getId().toString());
         headers.set("X-User-Role", currentUser.getRole().name());
+        headers.setContentType(contentType);
         return headers;
     }
 
     private HttpHeaders createServiceHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Service-Key", serviceKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
+
 
     public void createItem(ItemRequestDto dto) {
         User currentUser = authFacade.getCurrentUser();
         ItemServiceCreateDto createDto = itemMapper.toServiceCreate(dto, currentUser);
 
         String url = itemsServiceUrl + "/api/items";
-        HttpEntity<ItemServiceCreateDto> entity = new HttpEntity<>(createDto, createHeadersWithUser(currentUser));
+        HttpEntity<ItemServiceCreateDto> entity = new HttpEntity<>(createDto, createHeadersWithUser(currentUser, MediaType.APPLICATION_JSON));
         restTemplate.postForObject(url, entity, Void.class);
     }
 
@@ -67,25 +69,25 @@ public class ItemServiceClient {
         ItemServiceUpdateDto updateDto = itemMapper.toServiceUpdate(dto);
 
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<ItemServiceUpdateDto> entity = new HttpEntity<>(updateDto, createHeadersWithUser());
+        HttpEntity<ItemServiceUpdateDto> entity = new HttpEntity<>(updateDto, createHeadersWithUser(MediaType.APPLICATION_JSON));
         restTemplate.put(url, entity);
     }
 
     public void deleteItem(String id) {
         String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
     public void updateStatus(String id, String status) {
         String url = itemsServiceUrl + "/api/items/" + id + "/status?status=" + status;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
     public List<ItemServiceResponseDto> getMyItems() {
         String url = itemsServiceUrl + "/api/items/my-items";
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         ResponseEntity<ItemServiceResponseDto[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, ItemServiceResponseDto[].class);
         return Arrays.asList(response.getBody());
     }
@@ -110,13 +112,13 @@ public class ItemServiceClient {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", file.getResource());
 
-        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, createHeadersWithUser());
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, createHeadersWithUser(MediaType.MULTIPART_FORM_DATA));
         return restTemplate.postForObject(url, entity, String.class);
     }
 
     public void deleteImage(String itemId, int index) {
         String url = itemsServiceUrl + "/api/items/" + itemId + "/images/" + index;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser());
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.MULTIPART_FORM_DATA));
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
