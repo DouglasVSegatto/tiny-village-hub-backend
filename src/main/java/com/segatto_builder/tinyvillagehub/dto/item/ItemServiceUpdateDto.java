@@ -12,14 +12,14 @@ public class ItemServiceUpdateDto {
     /**
      * DTO for updating items in Item-Service microservice.
      * Does not include ownerId or status (those are managed separately).
-     * 
+     *
      * Example JSON:
      {
-         "name": "Harry Potter Book 1 - Updated",
-         "description": "Brand new Book - Updated description",
-         "type": "BOOK",
-         "availabilityType": "TRADE",
-         "condition": "USED"
+     "name": "Harry Potter Book 1 - Updated",
+     "description": "Brand new Book - Updated description",
+     "type": "BOOK",
+     "availabilityType": "TRADE",
+     "condition": "USED"
      }
      */
 
