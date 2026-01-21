@@ -34,17 +34,18 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity in API development
                 .authorizeHttpRequests(auth -> auth
-                        // Allow POST requests to Auth - clean up leater
+                        // Auth endpoints
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").permitAll()
-                        // Allow GET requests for item images
+                        // Public item endpoints
                         .requestMatchers(HttpMethod.GET, "/api/items/available").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/items/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/items/{id}").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        // Allow health check endpoint
+                        // Health check
                         .requestMatchers("/api/health").permitAll()
-                        // (WIP) Authentication require for all other requests
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
 
