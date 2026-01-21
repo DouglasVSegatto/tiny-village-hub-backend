@@ -6,11 +6,17 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,9 +26,70 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    // === MICROSERVICE COMMUNICATION ERRORS ===
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<String> handleClientError(HttpClientErrorException e) {
+        log.error("Microservice client error: {} - {}", e.getStatusCode(), e.getMessage());
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(e.getResponseBodyAsString());
+    }
+
+    @ExceptionHandler(HttpServerErrorException.class)
+    public ResponseEntity<String> handleServerError(HttpServerErrorException e) {
+        log.error("Microservice server error: {} - {}", e.getStatusCode(), e.getMessage());
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(e.getResponseBodyAsString());
+    }
+
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<ErrorResponse> handleResourceAccess(ResourceAccessException e, HttpServletRequest request) {
+        log.error("Failed to connect to microservice: {}", e.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error("Service Unavailable")
+                .message("Item service is currently unavailable")
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
+    // === REQUEST VALIDATION ERRORS ===
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException e, HttpServletRequest request) {
+        log.warn("Missing parameter: {}", e.getParameterName());
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message("Missing required parameter: " + e.getParameterName())
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+        log.warn("Type mismatch: {} for parameter {}", e.getValue(), e.getName());
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message("Invalid value for parameter: " + e.getName())
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // === ENTITY AND BUSINESS LOGIC ERRORS ===
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException e, HttpServletRequest request) {
-        log.warn("Entity not found {}", e.getMessage());
+        log.warn("Entity not found: {}", e.getMessage());
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
