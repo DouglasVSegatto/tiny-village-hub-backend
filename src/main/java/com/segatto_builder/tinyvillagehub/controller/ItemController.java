@@ -81,4 +81,52 @@ public class ItemController {
         List<ItemServiceResponseDto> items = itemServiceClient.searchByCountry(country);
         return ResponseEntity.ok(items);
     }
+
+    // PAGINATED ENDPOINTS
+    @GetMapping("/paginated")
+    public ResponseEntity<Object> getActiveItemsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.getActiveItemsPaginated(page, size));
+    }
+
+    @GetMapping("/paginated/my-items")
+    public ResponseEntity<Object> getMyItemsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.getMyItemsPaginated(page, size));
+    }
+
+    @GetMapping("/paginated/search/neighbourhood/{neighbourhood}")
+    public ResponseEntity<Object> getItemsByNeighbourhoodPaginated(
+            @PathVariable String neighbourhood,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.searchByNeighborhoodPaginated(neighbourhood, page, size));
+    }
+
+    @GetMapping("/paginated/search/city/{city}")
+    public ResponseEntity<Object> getItemsByCityPaginated(
+            @PathVariable String city,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.searchByCityPaginated(city, page, size));
+    }
+
+    @GetMapping("/paginated/search/state/{state}")
+    public ResponseEntity<Object> getItemsByStatePaginated(
+            @PathVariable String state,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.searchByStatePaginated(state, page, size));
+    }
+
+    @GetMapping("/paginated/search/country/{country}")
+    public ResponseEntity<Object> getItemsByCountryPaginated(
+            @PathVariable String country,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(itemServiceClient.searchByCountryPaginated(country, page, size));
+    }
+
 }
