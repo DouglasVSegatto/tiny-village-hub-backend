@@ -150,7 +150,7 @@ public class ItemServiceClient {
     //PAGINATED - SERVICE
     public Object getActiveItemsPaginated(int page, int size) {
         log.info("Fetching paginated active items - page: {}, size: {}", page, size);
-        String url = itemsServiceUrl + "/api/items/paginated?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/search/paginated?page=" + page + "&size=" + size;
         HttpEntity<Void> entity = new HttpEntity<>(createServiceHeaders());
         Object response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class).getBody();
         log.info("Received paginated response from item-service");
@@ -159,7 +159,7 @@ public class ItemServiceClient {
 
     public Object getMyItemsPaginated(int page, int size) {
         log.info("Fetching paginated my-items - page: {}, size: {}", page, size);
-        String url = itemsServiceUrl + "/api/items/paginated/my-items?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/my-items/paginated?page=" + page + "&size=" + size;
         HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         Object response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class).getBody();
         log.info("Received paginated my-items response from item-service");
@@ -168,7 +168,7 @@ public class ItemServiceClient {
 
     public Object searchByNeighborhoodPaginated(String neighborhood, int page, int size) {
         log.info("Fetching paginated items by neighborhood: {} - page: {}, size: {}", neighborhood, page, size);
-        String url = itemsServiceUrl + "/api/items/paginated/search/neighbourhood/" + neighborhood + "?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/search/paginated/neighbourhood/" + neighborhood + "?page=" + page + "&size=" + size;
         Object response = restTemplate.getForObject(url, Object.class);
         log.info("Received paginated neighborhood search response from item-service");
         return response;
@@ -176,7 +176,7 @@ public class ItemServiceClient {
 
     public Object searchByCityPaginated(String city, int page, int size) {
         log.info("Fetching paginated items by city: {} - page: {}, size: {}", city, page, size);
-        String url = itemsServiceUrl + "/api/items/paginated/search/city/" + city + "?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/search/paginated/city/" + city + "?page=" + page + "&size=" + size;
         Object response = restTemplate.getForObject(url, Object.class);
         log.info("Received paginated city search response from item-service");
         return response;
@@ -184,7 +184,7 @@ public class ItemServiceClient {
 
     public Object searchByStatePaginated(String state, int page, int size) {
         log.info("Fetching paginated items by state: {} - page: {}, size: {}", state, page, size);
-        String url = itemsServiceUrl + "/api/items/paginated/search/state/" + state + "?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/search/paginated/state/" + state + "?page=" + page + "&size=" + size;
         Object response = restTemplate.getForObject(url, Object.class);
         log.info("Received paginated state search response from item-service");
         return response;
@@ -192,7 +192,7 @@ public class ItemServiceClient {
 
     public Object searchByCountryPaginated(String country, int page, int size) {
         log.info("Fetching paginated items by country: {} - page: {}, size: {}", country, page, size);
-        String url = itemsServiceUrl + "/api/items/paginated/search/country/" + country + "?page=" + page + "&size=" + size;
+        String url = itemsServiceUrl + "/api/items/search/paginated/country/" + country + "?page=" + page + "&size=" + size;
         Object response = restTemplate.getForObject(url, Object.class);
         log.info("Received paginated country search response from item-service");
         return response;
