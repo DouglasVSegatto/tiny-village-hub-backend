@@ -100,7 +100,7 @@ public class UserService implements IUserService {
             throw new SecurityException("Current password is incorrect");
         }
 
-        if (!passwordEncoder.matches(dto.getNewPassword(), user.getPasswordHash())) {
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPasswordHash())) {
             throw new IllegalStateException("New password must be different from current password");
         }
 
