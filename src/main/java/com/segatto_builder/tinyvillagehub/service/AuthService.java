@@ -114,7 +114,7 @@ public class AuthService implements IAuthService {
             throw new BadCredentialsException("Incorrect username or password", e);
         }
 
-        refreshTokenService.deleteByUserId(user.getId());
+        refreshTokenService.deleteByUserId(user.getId(), user.getUsername());
         log.warn("ALL_TOKENS_REVOKED by user {}", user.getUsername());
     }
 }

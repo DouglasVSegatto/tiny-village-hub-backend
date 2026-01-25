@@ -14,7 +14,7 @@ public interface IRefreshTokenService {
 
     void deleteByToken(String token);
 
-    void deleteByUserId(UUID userId);
+    void deleteByUserId(UUID userId, String username);
 
     void deleteExpiredTokens();
 

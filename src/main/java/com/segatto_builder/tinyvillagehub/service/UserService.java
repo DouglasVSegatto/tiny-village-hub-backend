@@ -108,7 +108,7 @@ public class UserService implements IUserService {
         userRepository.save(user);
         log.info("PASSWORD_CHANGED for user {}", user.getUsername());
 
-        refreshTokenService.deleteByUserId(user.getId());
+        refreshTokenService.deleteByUserId(user.getId(), user.getUsername());
         log.info("ALL_TOKENS_REVOKED for user {}", user.getUsername());
     }
 }
