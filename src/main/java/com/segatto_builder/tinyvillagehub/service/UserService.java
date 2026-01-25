@@ -2,6 +2,7 @@ package com.segatto_builder.tinyvillagehub.service;
 
 import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.user.ChangePasswordDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.mappers.AddressMapper;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
@@ -28,7 +29,7 @@ public class UserService implements IUserService {
     private final IAuthFacade authFacade;
     private final AddressMapper addressMapper;
     private final ItemServiceClient itemServiceClient;
-    private final ItemMapper itemMapper;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public User registerNewUser(UserRegistrationDto registrationDto) throws IllegalStateException {
@@ -89,5 +90,25 @@ public class UserService implements IUserService {
             userRepository.save(user);
             throw new RuntimeException("Address update failed - please try again", e);
         }
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDto dto) {
+        User user = authFacade.getCurrentUser();
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())){
+            throw new SecurityException("Current password is incorrect");
+        }
+
+        if (!passwordEncoder.matches(dto.getNewPassword(), user.getPasswordHash())) {
+            throw new IllegalStateException("New password must be different from current password");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+        log.info("PASSWORD_CHANGED for user {}", user.getUsername());
+
+        refreshTokenService.deleteByUserId(user.getId());
+        log.info("ALL_TOKENS_REVOKED for user {}", user.getUsername());
     }
 }
