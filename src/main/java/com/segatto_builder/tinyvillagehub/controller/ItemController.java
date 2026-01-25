@@ -3,6 +3,8 @@ package com.segatto_builder.tinyvillagehub.controller;
 import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
+import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -128,6 +130,12 @@ public class ItemController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(itemServiceClient.getMyItemsPaginated(page, size));
+    }
+
+    @PutMapping("/update-location")
+    public ResponseEntity<Void> updateLocation(@Valid @RequestBody AddressRequestDto dto) {
+        itemServiceClient.updateLocation(dto);
+        return ResponseEntity.ok().build();
     }
 
 }

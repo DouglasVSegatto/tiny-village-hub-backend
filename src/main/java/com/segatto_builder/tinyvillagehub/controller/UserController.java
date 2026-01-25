@@ -30,6 +30,5 @@ public class UserController {
     public ResponseEntity<?> updateAddress(@RequestBody AddressRequestDto dto) {
         userService.updateAddress(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 }

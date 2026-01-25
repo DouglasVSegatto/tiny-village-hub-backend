@@ -1,8 +1,10 @@
 package com.segatto_builder.tinyvillagehub.service;
 
+import com.segatto_builder.tinyvillagehub.client.ItemServiceClient;
 import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserRegistrationDto;
 import com.segatto_builder.tinyvillagehub.mappers.AddressMapper;
+import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.Address;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.repository.UserRepository;
@@ -25,6 +27,8 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final IAuthFacade authFacade;
     private final AddressMapper addressMapper;
+    private final ItemServiceClient itemServiceClient;
+    private final ItemMapper itemMapper;
 
     @Override
     public User registerNewUser(UserRegistrationDto registrationDto) throws IllegalStateException {
@@ -62,13 +66,28 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
     }
 
+    //TODO Future have a AddressSync in MicroService
+    // OR
+    // wait until upgrade method to use latitude/longitude coordinates
     @Override
     public void updateAddress(AddressRequestDto dto) {
         User user = authFacade.getCurrentUser();
-        Address address = addressMapper.toModel(dto);
+        Address oldAddress = user.getAddress();
+        Address newAddress = addressMapper.toModel(dto);
 
-        user.setAddress(address);
-        userRepository.save(user);
-        log.info("ADDRESS_UPDATED by user {}", user.getUsername());
+        try {
+            user.setAddress(newAddress);
+            userRepository.save(user);
+            log.info("ADDRESS_UPDATED by user {}", user.getUsername());
+
+            itemServiceClient.updateLocation(dto);
+            log.info("ITEMS_ADDRESS_UPDATED by user {}", user.getUsername());
+
+        } catch (Exception e) {
+            log.error("Failed to sync items location for user {}, rolling back address", user.getUsername(), e);
+            user.setAddress(oldAddress);
+            userRepository.save(user);
+            throw new RuntimeException("Address update failed - please try again", e);
+        }
     }
 }
