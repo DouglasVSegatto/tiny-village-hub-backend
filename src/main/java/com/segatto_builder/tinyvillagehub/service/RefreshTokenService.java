@@ -21,7 +21,6 @@ import java.util.UUID;
 public class RefreshTokenService implements IRefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserRepository userRepository;
     @Value("${jwt.refresh.expiration}")
     private Long refreshTokenDurationMs;
 
@@ -29,10 +28,7 @@ public class RefreshTokenService implements IRefreshTokenService {
      * Creates and saves a new refresh token for a user.
      */
     @Override
-    public RefreshToken createRefreshToken(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
+    public RefreshToken createRefreshToken(User user) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
