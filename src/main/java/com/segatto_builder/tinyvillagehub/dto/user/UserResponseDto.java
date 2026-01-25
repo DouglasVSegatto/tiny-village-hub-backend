@@ -17,14 +17,14 @@ public class UserResponseDto {
     /**
      * Example JSON:
      {
-       "id": "550e8400-e29b-41d4-a716-446655440000",
-       "username": "user1",
-       "email": "user1@example.com",
-       "joinDate": "2026-01-15T10:30:00",
-       "neighborhood": "Downtown",
-       "city": "Seattle",
-       "state": "Washington",
-       "country": "USA"
+     "id": "550e8400-e29b-41d4-a716-446655440000",
+     "username": "user1",
+     "email": "user1@example.com",
+     "joinDate": "2026-01-15T10:30:00",
+     "neighborhood": "Downtown",
+     "city": "Seattle",
+     "state": "Washington",
+     "country": "USA"
      }
      */
 

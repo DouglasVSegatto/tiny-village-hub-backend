@@ -4,6 +4,7 @@ import com.segatto_builder.tinyvillagehub.dto.item.ItemRequestDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceCreateDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceResponseDto;
 import com.segatto_builder.tinyvillagehub.dto.item.ItemServiceUpdateDto;
+import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
 import com.segatto_builder.tinyvillagehub.mappers.ItemMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
@@ -73,16 +74,24 @@ public class ItemServiceClient {
         restTemplate.put(url, entity);
     }
 
-    public void deleteItem(String id) {
-        String url = itemsServiceUrl + "/api/items/" + id;
-        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
-        restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
-    }
-
     public void updateStatus(String id, String status) {
         String url = itemsServiceUrl + "/api/items/" + id + "/status?status=" + status;
         HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
         restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+    }
+
+    public void updateLocation(AddressRequestDto dto) {
+        log.info("Updating user items location");
+        String url = itemsServiceUrl + "/api/items/my-items/address";
+        HttpEntity<AddressRequestDto> entity = new HttpEntity<>(dto, createHeadersWithUser(MediaType.APPLICATION_JSON));
+        restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+        log.info("Location update request sent to item-service");
+    }
+
+    public void deleteItem(String id) {
+        String url = itemsServiceUrl + "/api/items/" + id;
+        HttpEntity<Void> entity = new HttpEntity<>(createHeadersWithUser(MediaType.APPLICATION_JSON));
+        restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
     public List<ItemServiceResponseDto> getMyItems() {

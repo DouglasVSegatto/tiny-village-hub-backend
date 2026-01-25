@@ -1,11 +1,13 @@
 package com.segatto_builder.tinyvillagehub.controller;
 
 import com.segatto_builder.tinyvillagehub.dto.user.AddressRequestDto;
+import com.segatto_builder.tinyvillagehub.dto.user.ChangePasswordDto;
 import com.segatto_builder.tinyvillagehub.dto.user.UserResponseDto;
 import com.segatto_builder.tinyvillagehub.mappers.UserMapper;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.security.IAuthFacade;
 import com.segatto_builder.tinyvillagehub.service.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,11 @@ public class UserController {
     public ResponseEntity<?> updateAddress(@RequestBody AddressRequestDto dto) {
         userService.updateAddress(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordDto dto) {
+        userService.changePassword(dto);
+        return ResponseEntity.ok().build();
     }
 }

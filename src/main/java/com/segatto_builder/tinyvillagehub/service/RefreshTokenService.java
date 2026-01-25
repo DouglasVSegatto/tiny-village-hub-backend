@@ -3,6 +3,7 @@ package com.segatto_builder.tinyvillagehub.service;
 import com.segatto_builder.tinyvillagehub.model.RefreshToken;
 import com.segatto_builder.tinyvillagehub.model.User;
 import com.segatto_builder.tinyvillagehub.repository.RefreshTokenRepository;
+import com.segatto_builder.tinyvillagehub.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,6 @@ import java.util.UUID;
 public class RefreshTokenService implements IRefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final IUserService userService;
     @Value("${jwt.refresh.expiration}")
     private Long refreshTokenDurationMs;
 
@@ -28,9 +28,7 @@ public class RefreshTokenService implements IRefreshTokenService {
      * Creates and saves a new refresh token for a user.
      */
     @Override
-    public RefreshToken createRefreshToken(UUID userId) {
-        User user = userService.findUserById(userId);
-
+    public RefreshToken createRefreshToken(User user) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
@@ -73,9 +71,8 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Transactional
     @Override
-    public void deleteByUserId(UUID userId) {
-        User user = userService.findUserById(userId);
-        log.debug("ALL_TOKENS_DELETED by user {}", user.getUsername());
+    public void deleteByUserId(UUID userId, String username) {
+        log.debug("ALL_TOKENS_DELETED by user {}", username);
         refreshTokenRepository.deleteByUserId(userId);
     }
 
